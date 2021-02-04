@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    app:startDestination="@id/mapsFragment">
+
+        <fragment android:id="@+id/profile_page_fragment"
+        android:label="Profile"
+        android:name="com.example.cs125project.ProfileFragment" />
+    <fragment
+        android:id="@+id/mapsFragment"
+        android:name="com.example.cs125project.MapsFragment"
+        android:label="fragment_maps"
+        tools:layout="@layout/fragment_maps" >
+        <action
+            android:id="@+id/action_mapsFragment_to_profile_page_fragment"
+            app:destination="@id/profile_page_fragment" />
+    </fragment>
+</navigation>
