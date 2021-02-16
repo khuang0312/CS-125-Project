@@ -3,65 +3,69 @@ package com.example.cs125project;
 //import androidx.annotation.NonNull;
 
 public class Location {
-    //@PrimaryKey
-    //@NonNull
-    private int cityLatitude;
-    //@PrimaryKey
-    //@NonNull
-    private int cityLongitude;
+    // Location is the bare minimum used to describe the geographic
+    // location of a person, place, or thing.
+
+    // locations don't have a primary key since they can occur multiple times
+    // among multiple places or people.
+
+    private float longitude;
+    private float latitude;
+
     private String city;
     private String state;
     private String country;
 
-    public Location(){
+
+    public Location() {
         //Ditto from Profile default constructor
     }
 
-    public Location(int lat, int lon, String city, String state, String country){
-        this.cityLatitude = lat;
-        this.cityLongitude = lon;
+    public Location(float lat, float lon, String city, String state, String country) {
+        this.latitude = lat;
+        this.longitude = lon;
         this.city = city;
         this.state = state;
         this.country = country;
     }
 
-    public void setCityLatitude(int lat){
-        this.cityLatitude = lat;
-    }
-
-    public void setCityLongitude(int lon){
-        this.cityLongitude = lon;
-    }
-
-    public void setCity(String c){
-        this.city = c;
-    }
-
-    public void setState(String s){
-        this.state = s;
-    }
-
-    public void setCountry(String c){
-        this.country = c;
-    }
-
-    public String getCity(){
+    public String getCity() {
         return this.city;
     }
 
-    public int getCityLatitude(){
-        return this.cityLatitude;
+    public void setCity(String c) {
+        this.city = c;
     }
 
-    public int getCityLongitude(){
-        return this.cityLongitude;
+    public float getLatitude() {
+        return this.latitude;
     }
 
-    public String getState(){
+    public void setLatitude(float lat) {
+        this.latitude = lat;
+    }
+
+    public float getLongitude() {
+        return this.longitude;
+    }
+
+    public void setLongitude(float lon) {
+        this.longitude = lon;
+    }
+
+    public String getState() {
         return this.state;
     }
 
-    public String getCountry(){
+    public void setState(String s) {
+        this.state = s;
+    }
+
+    public String getCountry() {
         return this.country;
+    }
+
+    public void setCountry(String c) {
+        this.country = c;
     }
 }

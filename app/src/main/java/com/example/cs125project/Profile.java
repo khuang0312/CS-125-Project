@@ -2,8 +2,8 @@ package com.example.cs125project;
 
 //import androidx.annotation.NonNull;
 //import androidx.room.PrimaryKey; //Where IS the PrimaryKey annotation?
+
 import java.util.ArrayList;
-import java.lang.Math;
 
 //TODO: Finalize user setup and attribute changing (all classes)
 //May want to add more vectors to compare after finalizing Profile class
@@ -19,11 +19,11 @@ public class Profile {
     private Location location;
     private ArrayList<String> interests;
 
-    public Profile(){
+    public Profile() {
         //Required for DataSnapshot.getValue(Profile.class) calls
     }
 
-    public Profile(String userName, String name, String email, int id, int age, Location location, ArrayList<String> interests){
+    public Profile(String userName, String name, String email, int id, int age, Location location, ArrayList<String> interests) {
         this.userName = userName;
         this.name = name;
         this.email = email;
@@ -33,44 +33,44 @@ public class Profile {
         this.interests = interests;
     }
 
-    public void setID(int i){
-        this.ID = i;
-    }
-
-    public void setEmail(String e){
-        this.email = e;
-    }
-
-    public void setAge(int i){
-        this.age = i;
-    }
-
-    public int getID(){
+    public int getID() {
         return this.ID;
     }
 
-    public String getName() {
-    	return this.name;
+    public void setID(int i) {
+        this.ID = i;
     }
-    
-    public String getUserName(){
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getUserName() {
         return this.userName;
     }
 
-    public String getEmail(){
+    public String getEmail() {
         return this.email;
     }
 
-    public int getAge(){
+    public void setEmail(String e) {
+        this.email = e;
+    }
+
+    public int getAge() {
         return this.age;
     }
-    
-    public Location getLocation() {
-    	return this.location;
+
+    public void setAge(int i) {
+        this.age = i;
     }
-    
-    public ArrayList<String> getInterests(){
-    	return this.interests;
+
+    public Location getLocation() {
+        return this.location;
+    }
+
+    public ArrayList<String> getInterests() {
+        return this.interests;
     }
 
     //Calculates weighted vector sum of two users with content-based feature vectors
@@ -93,13 +93,13 @@ public class Profile {
         float distance = Math.abs(this.location.getCityLatitude() - p2Lat) + Math.abs(this.location.getCityLongitude() - p2Lon);
         if (distance <= 0.01) {       //= Same block
             sum += 5;
-        } else if (distance <= 0.03){ //= Same street
+        } else if (distance <= 0.03) { //= Same street
             sum += 4;
-        } else if (distance <= 0.05){ //= Westminster to Garden Grove (neighboring cities)
+        } else if (distance <= 0.05) { //= Westminster to Garden Grove (neighboring cities)
             sum += 3;
         } else if (distance <= 0.1) { //= Westminster to Santa Ana
             sum += 2;
-        } else if (distance <= 0.15){ //= Westminster to UCI
+        } else if (distance <= 0.15) { //= Westminster to UCI
             sum += 1;
         }
         //Checks what interests the users share
