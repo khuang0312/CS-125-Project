@@ -3,7 +3,7 @@ package com.example.cs125project;
 //import androidx.annotation.NonNull;
 //import androidx.room.PrimaryKey; //Where IS the PrimaryKey annotation?
 
-import java.util.TreeSet;
+import java.util.ArrayList;
 
 //TODO: Finalize user setup and attribute changing (all classes)
 //May want to add more vectors to compare after finalizing Profile class
@@ -20,7 +20,7 @@ public class User {
     private String name;
     private int age;
     private Location location;
-    private TreeSet<Interest> interests;
+    private ArrayList<Interest> interests;
 
 
     public User(int id, String email, String username) {
@@ -35,7 +35,7 @@ public class User {
 
     public void addInterest(String str) {
         Interest i = Interest.getInterest(str);
-        if (i != Interest.UNAVAILABLE) {
+        if (i != Interest.UNAVAILABLE && !interests.contains(i)) {
             interests.add(i);
         }
     }
@@ -49,7 +49,7 @@ public class User {
         interests.clear();
     }
 
-    public void replaceInterest(TreeSet<Interest> interests) {
+    public void replaceInterest(ArrayList<Interest> interests) {
         this.interests = interests;
     }
 
@@ -98,7 +98,7 @@ public class User {
         this.location = location;
     }
 
-    public TreeSet<Interest> getInterests() {
+    public ArrayList<Interest> getInterests() {
         return interests;
     }
 
@@ -112,7 +112,6 @@ public class User {
         //Get p2's non-Profile data for convenience and simplicity
         float u2Lat = user2.getLocation().getLatitude();
         float u2Lon = user2.getLocation().getLongitude();
-        TreeSet<Interest> p2Interests = user2.getInterests();
         /*Checks user distances by checking for the same city; very basic
         If the latlong check works better, feel free to remove this
         if (this.location.getCity().equals(p2.getLocation().getCity())) {
@@ -133,10 +132,12 @@ public class User {
         }
 
         //Checks what interests the users share
-        TreeSet<Interest> sharedInterests = new TreeSet<Interest>(interests);
-        sharedInterests.retainAll(p2Interests);
-
-        sum += sharedInterests.size();
+        ArrayList<Interest> p2Interests = user2.getInterests();
+        for (Interest i : p2Interests) {
+            if (interests.contains(i)) {
+                sum += 1;
+            }
+        }
 
         return sum;
     }

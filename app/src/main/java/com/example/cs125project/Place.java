@@ -1,6 +1,7 @@
 package com.example.cs125project;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.TreeSet;
 
 public class Place {
@@ -18,7 +19,7 @@ public class Place {
     private int postal_code;
 
     // These are the user interests that the place caters to...
-    private TreeSet<Interest> interests;
+    private ArrayList<Interest> interests;
 
 
     public Place(BigInteger id, Location loc, String name, String address1, int postal_code) {
@@ -27,7 +28,7 @@ public class Place {
         this.name = name;
         this.address1 = address1;
         this.postal_code = postal_code;
-        this.interests = new TreeSet<Interest>();
+        this.interests = new ArrayList<Interest>();
     }
 
     public Place(BigInteger id, Location loc, String name, String address1, String address2, int postal_code) {
@@ -61,7 +62,7 @@ public class Place {
         interests.clear();
     }
 
-    public void replaceInterest(TreeSet<Interest> interests) {
+    public void replaceInterest(ArrayList<Interest> interests) {
         this.interests = interests;
     }
 
@@ -95,7 +96,7 @@ public class Place {
         this.postal_code = postal_code;
     }
 
-    public TreeSet<Interest> getInterests() {
+    public ArrayList<Interest> getInterests() {
         return interests;
     }
 }
