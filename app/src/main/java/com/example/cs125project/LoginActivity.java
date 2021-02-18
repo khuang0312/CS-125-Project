@@ -1,6 +1,10 @@
 package com.example.cs125project;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -39,7 +43,15 @@ public class LoginActivity extends AppCompatActivity {
 
     private void validate(String userName, String userPassword) {
         Log.d("userName, userPassword", userName + userPassword);
-        if ((userName.equals("a")) && (userPassword.equals("a"))) {
+        if ( ((userName.equals("a")) && (userPassword.equals("a"))) || ((userName.equals("b")) && (userPassword.equals("b")))) {
+            //save username to sharedPref for firebase access later
+
+            SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.username_shared_preference_key), this.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("username", userName);
+            editor.apply();
+
+            this.finish();
             Intent myIntent = new Intent(this, MainActivity.class);
             startActivity(myIntent);
         } else {

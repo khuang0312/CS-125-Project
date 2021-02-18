@@ -1,5 +1,7 @@
 package com.example.cs125project;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -17,36 +19,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //check if user has logged in yet
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        drawerLayout = findViewById(R.id.drawer_layout);
+        SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.username_shared_preference_key), this.MODE_PRIVATE);
+        String userName = sharedPref.getString("username", null);
+        if (userName == null) {
+            //username not yet received, launch LoginActivity
+            Intent myIntent = new Intent(this, LoginActivity.class);
+            startActivity(myIntent);
+        } else {
+
+            setContentView(R.layout.activity_main);
+            // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+            drawerLayout = findViewById(R.id.drawer_layout);
 
 
-        //NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-        //NavController navController = navHostFragment.getNavController();
+            //NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+            //NavController navController = navHostFragment.getNavController();
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+            Toolbar toolbar = findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+            NavigationView navigationView = findViewById(R.id.nav_view);
+            navigationView.setNavigationItemSelectedListener(this);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
+                    R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawerLayout.addDrawerListener(toggle);
+            toggle.syncState();
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                new MapsFragment()).commit();
-        // nav_Graph implementation
-//        AppBarConfiguration mAppBarConfiguration = new AppBarConfiguration.Builder(
-//                navController.getGraph())
-//                .setOpenableLayout(drawerLayout)
-//                .build();
-//
-//        NavigationView navView = findViewById(R.id.nav_view);
-//        NavigationUI.setupWithNavController(navView, navController);
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    new MapsFragment()).commit();
+        }
     }
 
     @Override

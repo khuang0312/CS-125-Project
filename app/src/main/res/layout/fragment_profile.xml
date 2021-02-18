@@ -10,6 +10,7 @@
         android:id="@+id/profile_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:inputType="text"
         android:text="Name_from_account"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -31,40 +32,54 @@
         android:id="@+id/profile_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/profile_phone_number"
+        android:text="email_from_account"
+        app:layout_constraintBottom_toTopOf="@+id/profile_age"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_name"
-        tools:text="Enter your email" />
+        app:layout_constraintTop_toBottomOf="@+id/profile_name"/>
+
+<!--    <EditText-->
+<!--        android:id="@+id/profile_phone_number"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Enter your phone number"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/profile_age"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.5"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/profile_email" />-->
 
     <EditText
-        android:id="@+id/profile_phone_number"
+        android:id="@+id/profile_age"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enter your phone number"
-        app:layout_constraintBottom_toTopOf="@+id/profile_age"
+        android:text="age_from_account"
+        android:inputType="text"
+        app:layout_constraintBottom_toTopOf="@+id/profile_location"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profile_email" />
 
     <EditText
-        android:id="@+id/profile_age"
+        android:id="@+id/profile_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enter your City of Residence"
+        android:text="address, city, state"
+        android:inputType="text"
         app:layout_constraintBottom_toTopOf="@+id/save_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_phone_number" />
+        app:layout_constraintTop_toBottomOf="@+id/profile_age" />
 
     <Button
         android:id="@+id/save_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Save Changes"
+        android:inputType="text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
