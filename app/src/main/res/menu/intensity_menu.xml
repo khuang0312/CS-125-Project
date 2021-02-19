@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/low_intensity_option"
+        android:title="low_intensity_option"/>
+    <item android:id="@+id/med_intensity_option"
+        android:title="med_intensity_option"/>
+    <item android:id="@+id/high_intensity_option"
+        android:title="high_intensity_option"/>
+</menu>

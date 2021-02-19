@@ -6,4 +6,27 @@
     <string name = "username_shared_preference_key">sharedPrefUN</string>
     <string name = "google_maps_key">AIzaSyBcqrPk1ZYNinfBEAcSk47kkdq7HdyI71U</string>
 
+    <string name="walking_exercise_option">Walking</string>
+    <string name="running_exercise_option">Running</string>
+    <string name="swimming_exercise_option">Swimming</string>
+    <string name="climbing_exercise_option">Climbing</string>
+    <string name="yoga_exercise_option">Yoga</string>
+    <string name="badminton_exercise_option">Badminton</string>
+    <string name="hockey_exercise_option">Hockey</string>
+    <string name="tennis_exercise_option">Tennis</string>
+    <string name="basketball_exercise_option">Basketball</string>
+    <string name="soccer_exercise_option">Soccer</string>
+    <string name="football_exercise_option">Football</string>
+    <string name="baseball_exercise_option">Baseball</string>
+    <string name="golf_exercise_option">Golf</string>
+    <string name="pilates_exercise_option">Pilates</string>
+    <string name="parkour_exercise_option">Parkour</string>
+    <string name="dancing_exercise_option">Dancing</string>
+    <string name="lacrosse_exercise_option">Lacrosse</string>
+    <string name="wrestling_exercise_option">Wrestling</string>
+    <string name="martial_arts_exercise_option">MMA</string>
+
+    <string name="low_intensity_option">Low</string>
+    <string name="med_intensity_option">Medium</string>
+    <string name="high_intensity_option">High</string>
 </resources>

@@ -1,8 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/report"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ReportFragment" />
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/report_category"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Exercise Category:"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@id/report_category_select"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/report_category_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose exercise category"
+        app:layout_constraintBottom_toTopOf="@id/report_intensity"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/report_category" />
+
+    <TextView
+        android:id="@+id/report_intensity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Exercise Intensity:"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@id/report_intensity_select"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/report_category_select" />
+
+    <Button
+        android:id="@+id/report_intensity_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose level of exercise intensity"
+        app:layout_constraintBottom_toTopOf="@id/report_duration"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/report_intensity" />
+
+    <TextView
+        android:id="@+id/report_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Exercise Intensity:"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@id/report_duration_min_edittext"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/report_intensity_select" />
+
+    <!--        hori chain start-->
+
+    <!--        hori chain end-->
+
+    <EditText
+        android:id="@+id/report_duration_min_edittext"
+        android:layout_width="119dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        app:layout_constraintBottom_toTopOf="@id/report_save_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/report_duration_min_textview"
+        app:layout_constraintTop_toBottomOf="@id/report_duration" />
+
+    <TextView
+        android:id="@+id/report_duration_min_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mins:"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toTopOf="@id/report_save_button"
+        app:layout_constraintEnd_toStartOf="@+id/report_duration_min_edittext"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/report_duration_hours_edittext"
+        app:layout_constraintTop_toBottomOf="@id/report_duration" />
+
+    <EditText
+        android:id="@+id/report_duration_hours_edittext"
+        android:layout_width="152dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        app:layout_constraintBottom_toTopOf="@id/report_save_button"
+        app:layout_constraintEnd_toStartOf="@+id/report_duration_min_textview"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/report_duration_hrs_textview"
+        app:layout_constraintTop_toBottomOf="@id/report_duration"/>
+
+    <TextView
+        android:id="@+id/report_duration_hrs_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hrs:"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toTopOf="@id/report_save_button"
+        app:layout_constraintEnd_toStartOf="@+id/report_duration_hours_edittext"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/report_duration" />
+
+    <Button
+        android:id="@+id/report_save_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save Changes"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/report_duration_min_textview" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
