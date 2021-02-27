@@ -2,9 +2,8 @@ package com.example.cs125project;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.TreeSet;
 
-public class Place {
+public class PlaceStruct {
     // Place describes a Point of Interest that a User would want to go to...
     // It contains a Location
 
@@ -22,7 +21,7 @@ public class Place {
     private ArrayList<Interest> interests;
 
 
-    public Place(BigInteger id, Location loc, String name, String address1, int postal_code) {
+    public PlaceStruct(BigInteger id, Location loc, String name, String address1, int postal_code) {
         this.id = id;
         this.location = loc;
         this.name = name;
@@ -31,7 +30,7 @@ public class Place {
         this.interests = new ArrayList<Interest>();
     }
 
-    public Place(BigInteger id, Location loc, String name, String address1, String address2, int postal_code) {
+    public PlaceStruct(BigInteger id, Location loc, String name, String address1, String address2, int postal_code) {
         this.id = id;
         this.location = loc;
         this.name = name;
@@ -55,7 +54,7 @@ public class Place {
 
     public void removeInterest(String str) {
         Interest i = Interest.getInterest(str);
-		interests.remove(i);
+        interests.remove(i);
     }
 
     public void clearInterests() {

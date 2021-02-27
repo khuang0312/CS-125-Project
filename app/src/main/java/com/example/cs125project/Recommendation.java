@@ -3,6 +3,9 @@ package com.example.cs125project;
 import java.util.ArrayList;
 import java.lang.Integer;
 import java.util.List;
+
+
+
 //import javafx.util.Pair; //implementing Pair compatibility seems like too much of a pain
 
 public class Recommendation {

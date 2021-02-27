@@ -56,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(myIntent);
         } else {
             counter--;
-            Attempts.setText("No. of attemps remaining: " + counter);
+            Attempts.setText("No. of attempts remaining: " + counter);
             if (counter == 0) {
                 Login.setEnabled(false);
             }
