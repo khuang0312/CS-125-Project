@@ -25,32 +25,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String userName = sharedPref.getString("username", null);
         if (userName == null) {
             //username not yet received, launch LoginActivity
-            Intent myIntent = new Intent(this, LoginActivity.class);
-            startActivity(myIntent);
-        } else {
+            //Intent myIntent = new Intent(this, LoginActivity.class);
+            //startActivity(myIntent);
+            String defaultUsername = "kraysi";
+            sharedPref = this.getSharedPreferences(getString(R.string.username_shared_preference_key), this.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("username", defaultUsername);
+            editor.apply();
 
-            setContentView(R.layout.activity_main);
-            // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-            drawerLayout = findViewById(R.id.drawer_layout);
-
-
-            //NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-            //NavController navController = navHostFragment.getNavController();
-
-            Toolbar toolbar = findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
-
-            NavigationView navigationView = findViewById(R.id.nav_view);
-            navigationView.setNavigationItemSelectedListener(this);
-
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
-                    R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-            drawerLayout.addDrawerListener(toggle);
-            toggle.syncState();
-
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new MapsFragment()).commit();
         }
+        //else {
+
+        setContentView(R.layout.activity_main);
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        drawerLayout = findViewById(R.id.drawer_layout);
+
+
+        //NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        //NavController navController = navHostFragment.getNavController();
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                new MapsFragment()).commit();
+        //}
     }
 
     @Override
@@ -67,6 +74,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_map:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new MapsFragment()).commit();
+                break;
+            case R.id.nav_report:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new ReportFragment()).commit();
         }
         return true;
     }
