@@ -24,7 +24,10 @@ public class User {
     private String address;
     private String city;
     private String state;
-    private ArrayList<Interest> interests;
+    private ArrayList<String> interests;
+
+    private int latitude;
+    private int longitude;
 
     public User() {
         this.id = 0; //need to create an original id
@@ -44,7 +47,7 @@ public class User {
         //this.username = username;
     //}
 
-    public void addInterest(String str) {
+    /*public void addInterest(String str) {
         Interest i = Interest.getInterest(str);
         if (i != Interest.UNAVAILABLE && !interests.contains(i)) {
             interests.add(i);
@@ -54,15 +57,15 @@ public class User {
     public void removeInterest(String str) {
         Interest i = Interest.getInterest(str);
         interests.remove(i);
-    }
+    }*/
 
     public void clearInterests() {
         interests.clear();
     }
 
-    public void replaceInterest(ArrayList<Interest> interests) {
+    /*public void replaceInterest(ArrayList<Interest> interests) {
         this.interests = interests;
-    }
+    }*/
 
     // GETTERS
     public int getID() {
@@ -116,9 +119,12 @@ public class User {
         this.state = state;
     }
 
-    public ArrayList<Interest> getInterests() {
+    public ArrayList<String> getInterests() {
         return interests;
     }
+
+    public int getLatitude(){return this.latitude;}
+    public int getLongitude(){return this.longitude;}
 
     //Calculates weighted vector sum of two users with content-based feature vectors
 //    public int calculateWeightedVectorSum(User user2) {
@@ -128,15 +134,15 @@ public class User {
 //            return 0;
 //        }
 //        //Get p2's non-Profile data for convenience and simplicity
-//        float u2Lat = user2.getLocation().getLatitude();
-//        float u2Lon = user2.getLocation().getLongitude();
+//        float u2Lat = (float)user2.getLocation().getLatitude();
+//        float u2Lon = (float)user2.getLocation().getLongitude();
 //        /*Checks user distances by checking for the same city; very basic
 //        If the latlong check works better, feel free to remove this
 //        if (this.location.getCity().equals(p2.getLocation().getCity())) {
 //            sum += 5;
 //        }*/
 //        //Uses latitude and longitude to measure users' distances; weight decreases with distance
-//        float distance = (Math.abs(this.location.getLatitude() - u2Lat) + Math.abs(this.location.getLongitude() - u2Lon));
+//        float distance = (Math.abs((float)this.location.getLatitude() - u2Lat) + Math.abs((float)this.location.getLongitude() - u2Lon));
 //        if (distance <= 0.01) {       //= Same block
 //            sum += 5;
 //        } else if (distance <= 0.03) { //= Same street
@@ -153,7 +159,7 @@ public class User {
 //        ArrayList<Interest> p2Interests = user2.getInterests();
 //        for (Interest i : p2Interests) {
 //            if (interests.contains(i)) {
-//                sum += 1;
+//                sum += 4;
 //            }
 //        }
 //

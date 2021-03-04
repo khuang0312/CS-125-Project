@@ -18,8 +18,10 @@ public class PlaceStruct {
     private int postal_code;
 
     // These are the user interests that the place caters to...
-    private ArrayList<Interest> interests;
+    private ArrayList<String> interests;
 
+    private int latitude;
+    private int longitude;
 
     public PlaceStruct(BigInteger id, Location loc, String name, String address1, int postal_code) {
         this.id = id;
@@ -27,7 +29,7 @@ public class PlaceStruct {
         this.name = name;
         this.address1 = address1;
         this.postal_code = postal_code;
-        this.interests = new ArrayList<Interest>();
+        this.interests = new ArrayList<String>();
     }
 
     public PlaceStruct(BigInteger id, Location loc, String name, String address1, String address2, int postal_code) {
@@ -45,7 +47,7 @@ public class PlaceStruct {
         this.address3 = address3;
     }
 
-    public void addInterest(String str) {
+    /*public void addInterest(String str) {
         Interest i = Interest.getInterest(str);
         if (i != Interest.UNAVAILABLE) {
             interests.add(i);
@@ -55,15 +57,15 @@ public class PlaceStruct {
     public void removeInterest(String str) {
         Interest i = Interest.getInterest(str);
         interests.remove(i);
-    }
+    }*/
 
     public void clearInterests() {
         interests.clear();
     }
 
-    public void replaceInterest(ArrayList<Interest> interests) {
+    /*public void replaceInterest(ArrayList<Interest> interests) {
         this.interests = interests;
-    }
+    }*/
 
     // GETTERS
     public Location getLocation() {
@@ -95,7 +97,11 @@ public class PlaceStruct {
         this.postal_code = postal_code;
     }
 
-    public ArrayList<Interest> getInterests() {
+    public ArrayList<String> getInterests() {
         return interests;
     }
+
+    public int getLatitude(){return this.latitude;}
+    public int getLongitude(){return this.longitude;}
+    public BigInteger getID(){return this.id;}
 }
