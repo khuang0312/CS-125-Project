@@ -51,10 +51,10 @@ public class ProfileFragment extends Fragment {
     double latitude;
     double longitude;
 
-    String address;
-    String country;
-    String state;
-
+    String address = "";
+    String country = "";
+    String state = "";
+    TextView locationDisplay;
 
 
     @Nullable
@@ -70,7 +70,7 @@ public class ProfileFragment extends Fragment {
             }
         });
         Button saveData = view.findViewById(R.id.save_button);
-
+        locationDisplay = (TextView) view.findViewById(R.id.location_display);
         // set up for Places API
         Places.initialize(getActivity().getApplicationContext(), "AIzaSyDmgABoOuT2Fy_LEq-QEHK9T1y3Ff6NPxQ");
         PlacesClient placesClient = Places.createClient(getActivity().getApplicationContext());
@@ -96,7 +96,8 @@ public class ProfileFragment extends Fragment {
                 address = place.getAddress();
                 state = addrComps.get(addrCompsLen - 3).getName();
                 country = addrComps.get(addrCompsLen - 2).getName();
-
+                String locationString = address + " " + " " + state + " " + country;
+                locationDisplay.setText(locationString);
                 Log.i("PLACE_SELECT", "Place: " + address + " " + " " + state + " " + country);
             }
             @Override
@@ -135,12 +136,17 @@ public class ProfileFragment extends Fragment {
                     // EditText location = view.findViewById(R.id.profile_location);
 
 
-                    /*
-                    EditText location = view.findViewById(R.id.profile_location);
+
+                    TextView location = view.findViewById(R.id.location_display);
                     String locationData;
-                    locationData = user.getAddress() + ", " + user.getCity() + ", " + user.getState();
+                    address = user.getAddress();
+                    state = user.getState();
+                    country = user.getCountry();
+                    latitude = user.getLatitude();
+                    longitude = user.getLongitude();
+                    locationData = address + ", " + state + ", " + country;
                     location.setText(locationData);
-                    */
+
 
                 }
             }
@@ -165,17 +171,18 @@ public class ProfileFragment extends Fragment {
                 EditText name = view.findViewById(R.id.profile_name);
                 EditText email = view.findViewById(R.id.profile_email);
                 EditText age = view.findViewById(R.id.profile_age);
+                TextView location = view.findViewById(R.id.location_display);
 
-                /*
-                EditText location = view.findViewById(R.id.profile_location);
+                //EditText location = view.findViewById(R.id.profile_location);
                 updateUser.setName(name.getText().toString());
                 updateUser.setEmail(email.getText().toString());
                 updateUser.setAge(age.getText().toString());
-                String[] cityState = location.getText().toString().split(", ");
-                updateUser.setAddress(cityState[0]);
-                updateUser.setCity(cityState[1]);
-                updateUser.setState(cityState[2]);
-                */
+                //String[] cityState = location.getText().toString().split(", ");
+                updateUser.setAddress(address);
+                updateUser.setState(state);
+                updateUser.setCountry(country);
+                updateUser.setLatitude(latitude);
+                updateUser.setLongitude(longitude);
 
 
                 FirebaseDatabase database = FirebaseDatabase.getInstance();

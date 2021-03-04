@@ -21,9 +21,12 @@ public class User {
     private String name;
     private String age;
 //    private Location location;
+    double latitude;
+    double longitude;
     private String address;
     private String city;
     private String state;
+    private String country;
     private ArrayList<Interest> interests;
 
     public User() {
@@ -90,6 +93,7 @@ public class User {
         this.name = name;
     }
 
+
     public String getAge() {
         return age;
     }
@@ -114,6 +118,30 @@ public class User {
     }
     public void setState(String state) {
         this.state = state;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public ArrayList<Interest> getInterests() {

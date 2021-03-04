@@ -10,6 +10,7 @@
         android:id="@+id/profile_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:hint="Enter your name"
         android:inputType="text"
         android:text="Name_from_account"
         android:textSize="30sp"
@@ -32,6 +33,7 @@
         android:id="@+id/profile_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:hint="enter email here"
         android:text="email_from_account"
         app:layout_constraintBottom_toTopOf="@+id/profile_age"
         app:layout_constraintEnd_toEndOf="parent"
@@ -54,6 +56,7 @@
         android:id="@+id/profile_age"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:hint="enter age here"
         android:inputType="text"
         android:text="age_from_account"
         app:layout_constraintBottom_toTopOf="@+id/profile_location"
@@ -63,19 +66,29 @@
         app:layout_constraintTop_toBottomOf="@+id/profile_email" />
 
 
-
     <androidx.fragment.app.FragmentContainerView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/profile_location"
         android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:elevation="1dp"
+        app:layout_constraintBottom_toTopOf="@+id/location_display"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_age" />
+<!--    android:layout_width="200dp"-->
+<!--    android:layout_height="25dp"-->
+    <TextView
+        android:id="@+id/location_display"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/save_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_age"
-        />
-
+        app:layout_constraintTop_toBottomOf="@+id/profile_location" />
 
     <Button
         android:id="@+id/save_button"
@@ -83,10 +96,13 @@
         android:layout_height="wrap_content"
         android:inputType="text"
         android:text="Save Changes"
+        android:layout_marginTop="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profile_age" />
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
