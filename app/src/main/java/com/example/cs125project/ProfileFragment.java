@@ -45,15 +45,16 @@ public class ProfileFragment extends Fragment {
     private final Uri selectedImage = null;
     String username;
     User currentUser;
-    //Map<String, User> userMap = new HashMap<>();
 
     // global variables to save selected profile location
     double latitude;
     double longitude;
 
     String address = "";
-    String country = "";
+    String city = "";
     String state = "";
+    String country = "";
+
     TextView locationDisplay;
 
 
@@ -78,7 +79,7 @@ public class ProfileFragment extends Fragment {
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getChildFragmentManager().findFragmentById(R.id.profile_location);
 
-        // autocompleteFragment.setTypeFilter(TypeFilter.CITIES);
+        // autocompleteFragment.setTypeFilter(TypeFilter.ADDRESS);
 
         // Specify the types of place data to return.
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ADDRESS, Place.Field.ADDRESS_COMPONENTS, Place.Field.LAT_LNG));
@@ -87,18 +88,25 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onPlaceSelected(@NotNull Place place) {
                 // Saves info to global variables...
+                address = place.getAddress();
                 latitude = place.getLatLng().latitude;
                 longitude = place.getLatLng().longitude;
 
                 List<AddressComponent> addrComps = place.getAddressComponents().asList();
-                int addrCompsLen = addrComps.size();
+                for (AddressComponent ac : addrComps) {
+                    if (ac.getTypes().contains("country")) {
+                        country = ac.getName();
+                    } else if (ac.getTypes().contains("administrative_area_level_1")) {
+                        state = ac.getName();
+                    } else if (ac.getTypes().contains("locality")) {
+                        city = ac.getName();
+                    }
+                }
 
-                address = place.getAddress();
-                state = addrComps.get(addrCompsLen - 3).getName();
-                country = addrComps.get(addrCompsLen - 2).getName();
-                String locationString = address + " " + " " + state + " " + country;
-                locationDisplay.setText(locationString);
-                Log.i("PLACE_SELECT", "Place: " + address + " " + " " + state + " " + country);
+
+                locationDisplay.setText(address);
+
+                Log.i("PLACE_SELECT", "Place: " + address);
             }
             @Override
             public void onError(@NotNull Status status) {
@@ -109,15 +117,14 @@ public class ProfileFragment extends Fragment {
 
 
 
-
+        // Update text fields if corresponding user entry
+        // has changed in database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         //get username through shared preferences, check if it already exists in firebase
         SharedPreferences sharedPref = view.getContext().getSharedPreferences(getString(R.string.username_shared_preference_key), view.getContext().MODE_PRIVATE);
         username = sharedPref.getString("username", "noUsername");
         Log.d("ProfileFragment", username);
         DatabaseReference dbRef = database.getReference();
-
-
         dbRef.child("users").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -134,20 +141,15 @@ public class ProfileFragment extends Fragment {
                     age.setText(user.getAge());
 
                     // EditText location = view.findViewById(R.id.profile_location);
-
-
-
-                    TextView location = view.findViewById(R.id.location_display);
                     String locationData;
                     address = user.getAddress();
                     state = user.getState();
                     country = user.getCountry();
                     latitude = user.getLatitude();
                     longitude = user.getLongitude();
-                    locationData = address + ", " + state + ", " + country;
-                    location.setText(locationData);
 
-
+                    // address include city, country, and state if provided
+                    locationDisplay.setText(address);
                 }
             }
 
@@ -160,37 +162,32 @@ public class ProfileFragment extends Fragment {
 
 
 
-        //email number age
+        // puts a listener on the "Submit" button
         saveData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //save users changes to profile to firebase
-                //Map<String, User> userMap = new HashMap<>();
-                User updateUser = new User();
+                /* When the "Submit" button is clicked, save user changes
+                to their profile in Firebase
+                 */
+                User updatedUser = new User();
 
                 EditText name = view.findViewById(R.id.profile_name);
                 EditText email = view.findViewById(R.id.profile_email);
                 EditText age = view.findViewById(R.id.profile_age);
                 TextView location = view.findViewById(R.id.location_display);
 
-                //EditText location = view.findViewById(R.id.profile_location);
-                updateUser.setName(name.getText().toString());
-                updateUser.setEmail(email.getText().toString());
-                updateUser.setAge(age.getText().toString());
-                //String[] cityState = location.getText().toString().split(", ");
-                updateUser.setAddress(address);
-                updateUser.setState(state);
-                updateUser.setCountry(country);
-                updateUser.setLatitude(latitude);
-                updateUser.setLongitude(longitude);
-
+                updatedUser.setName(name.getText().toString());
+                updatedUser.setEmail(email.getText().toString());
+                updatedUser.setAge(age.getText().toString());
+                updatedUser.setAddress(address);
+                updatedUser.setState(state);
+                updatedUser.setCountry(country);
+                updatedUser.setLatitude(latitude);
+                updatedUser.setLongitude(longitude);
 
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference dbRef = database.getReference();
-                dbRef.child("users").child(username).setValue(updateUser);
-                // dbRef.setValue(userMap);
-
-
+                dbRef.child("users").child(username).setValue(updatedUser);
             }
         });
         Log.d("ProfileFragment", "End initialization");

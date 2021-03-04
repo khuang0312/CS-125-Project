@@ -41,10 +41,20 @@ public class ReportFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("ReportFragment", "Begin initialization");
         final View view = inflater.inflate(R.layout.fragment_report, container, false);
+
+        /*
         final EditText reportIntensityET = view.findViewById(R.id.report_intensity);
         final EditText reportCategoryET = view.findViewById(R.id.report_category);
         final EditText reportHoursET = view.findViewById(R.id.report_duration_hours_edittext);
         final EditText reportMinET = view.findViewById(R.id.report_duration_min_edittext);
+        */
+
+        final TextView reportIntensityET = view.findViewById(R.id.report_intensity);
+        final TextView reportCategoryET = view.findViewById(R.id.report_category);
+        final EditText reportHoursET = view.findViewById(R.id.report_duration_hours_edittext);
+        final EditText reportMinET = view.findViewById(R.id.report_duration_min_edittext);
+
+
         Button saveDataBtn = view.findViewById(R.id.report_save_button);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
