@@ -26,7 +26,7 @@ public class MessageFragment extends Fragment {
     //TODO: We need to finalize a consistent way to represent intensities in our code
     int recommendedIntensity;
     int recommendedDuration;
-    PlaceStruct recommendedPlace;
+    Place recommendedPlace;
     User recommendedUser;
 
     //Used for getting info to inform activity recommendation
@@ -43,7 +43,6 @@ public class MessageFragment extends Fragment {
 
     //User's info, used for informing recommendations
     String username;
-    int userID;
     double userLat;
     double userLong;
 
@@ -68,7 +67,6 @@ public class MessageFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 if (user != null) {
-                    userID = user.getID();
                     userLat = user.getLatitude();
                     userLong = user.getLongitude();
                 }
@@ -99,9 +97,9 @@ public class MessageFragment extends Fragment {
                             lastIntensities.add(3);
                             break;
                     }
-                    lastInterests.add(report.getInterest());
-                    lastDurations.add(report.getMinutes() + report.getHours()*60);
-                    //Log.i("REPORT INFO", "Report found: " + report.getInterest());
+                    lastInterests.add(report.getCategory());
+                    lastDurations.add(report.getMin() + report.getHrs()*60);
+                    //Log.i("REPORT INFO", "Report processed: " + report.getSubmissionTime());
                 }
             }
 
@@ -118,13 +116,12 @@ public class MessageFragment extends Fragment {
         interestForScoring.add(Interest.getString(recommendedInterest));
 
         //Finds a Place to recommend the user based on proximity and the activity they were recommended
-        //TODO: Similar latlong problem as with User
         Query orderedPlaces = dbRef.child("places").orderByKey();
         orderedPlaces.addListenerForSingleValueEvent(new ValueEventListener(){
             @Override
             public void onDataChange(DataSnapshot dataSnapshot){
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    PlaceStruct place = snapshot.getValue(PlaceStruct.class);
+                    Place place = snapshot.getValue(Place.class);
                     currPlaceScore = 0;
                     currPlaceScore += Recommendation.locationScore(userLat, userLong, place.getLatitude(), place.getLongitude());
                     currPlaceScore += Recommendation.interestsScore(interestForScoring, place.getInterests());
@@ -142,7 +139,6 @@ public class MessageFragment extends Fragment {
         });
 
         //Finds a User to match the current user based on proximity and the activity recommended
-        //TODO: Similar latlong problem, will interest matching only use the recommended activity for users?
         Query orderedUsers = dbRef.child("users").orderByKey();
         orderedUsers.addListenerForSingleValueEvent(new ValueEventListener(){
             @Override
@@ -150,7 +146,7 @@ public class MessageFragment extends Fragment {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                     User user2 = snapshot.getValue(User.class);
                     //Skip if database user is the current user
-                    if (userID == user2.getID()){
+                    if (username.equals(user2.getUsername())){
                         continue;
                     }
                     currUserScore = 0;
@@ -169,7 +165,7 @@ public class MessageFragment extends Fragment {
             }
         });
         Log.i("RECOMMENDATIONS", "Recommended " + Interest.getString(recommendedInterest) + " at " + recommendedIntensity + " intensity for " + recommendedDuration + "minutes");
-        Log.i("USER AND PLACE",  "Place " + recommendedPlace.getID() + " with " + recommendedUser.getID());
+        Log.i("USER AND PLACE",  "Place " + recommendedPlace.getName() + " with " + recommendedUser.getUsername());
 
         return view;
     }
