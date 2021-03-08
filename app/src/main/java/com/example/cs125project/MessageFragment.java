@@ -24,7 +24,7 @@ public class MessageFragment extends Fragment {
     //Global variables
     //Recommendations to be displayed
     Interest recommendedInterest;
-    int recommendedIntensity;
+    String recommendedIntensity;
     int recommendedDuration;
     //Place recommendedPlace;
     User recommendedUser;
@@ -87,13 +87,13 @@ public class MessageFragment extends Fragment {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Report report = snapshot.getValue(Report.class);
                     switch (report.getIntensity()) {
-                        case "L":
+                        case "Low":
                             lastIntensities.add(1);
                             break;
-                        case "M":
+                        case "Medium":
                             lastIntensities.add(2);
                             break;
-                        case "H":
+                        case "High":
                             lastIntensities.add(3);
                             break;
                     }
@@ -150,8 +150,8 @@ public class MessageFragment extends Fragment {
                         continue;
                     }
                     currUserScore = 0;
-                    //currUserScore += Recommendation.locationScore(userLat, userLong, user2.getLatitude(), user2.getLongitude());
-                    //currUserScore += Recommendation.interestsScore(interestForScoring, user2.getInterests());
+                    currUserScore += Recommendation.locationScore(userLat, userLong, user2.getLatitude(), user2.getLongitude());
+                    currUserScore += Recommendation.interestsScore(interestForScoring, user2.getInterests());
                     if (bestUserScore < currUserScore) {
                         bestUserScore = currUserScore;
                         recommendedUser = user2;
@@ -164,8 +164,10 @@ public class MessageFragment extends Fragment {
                 Log.d("onCancelled", "triggered in the event that this listener either failed at the server, or is removed as a result of the security and Firebase Database rules.");
             }
         });
-        //Log.i("RECOMMENDATIONS", "Recommended " + Interest.getString(recommendedInterest) + " at " + recommendedIntensity + " intensity for " + recommendedDuration + "minutes");
-        //Log.i("USER AND PLACE",  "Place " + recommendedPlace.getName() + " with " + recommendedUser.getUsername());
+        Log.i("RECOMMENDATIONS", "Recommended activity: " + Interest.getString(recommendedInterest));
+        Log.i("RECOMMENDATIONS", "Recommended intensity: " + recommendedIntensity);
+        Log.i("RECOMMENDATIONS", "Recommended time: " + recommendedDuration + " minutes");
+        Log.i("RECOMMENDATIONS", "Recommended user: " + recommendedUser.getUsername());
 
         return view;
     }

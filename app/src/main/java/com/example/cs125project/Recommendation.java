@@ -51,7 +51,8 @@ public class Recommendation {
     }
 
     //Calculates the recommended intensity level for an activity given the last n user reports
-    static int getRecommendedIntensity(ArrayList<Integer> intensityList, int n) {
+    static String getRecommendedIntensity(ArrayList<Integer> intensityList, int n) {
+        String intensity_str = "";
         int intensity = 0;
         int intensityLevel = 0;
         int listSize = intensityList.size()-1;
@@ -69,7 +70,18 @@ public class Recommendation {
             intensity += intensityLevel;
         }
         intensity = intensity/n;
-        return intensity;
+        switch (intensity){
+            case 1:
+                intensity_str = "Low";
+                break;
+            case 2:
+                intensity_str = "Medium";
+                break;
+            case 3:
+                intensity_str = "High";
+                break;
+        }
+        return intensity_str;
     }
 
     //Returns a recommended activity given the last n user reports

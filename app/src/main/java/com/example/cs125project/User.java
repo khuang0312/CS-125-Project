@@ -25,7 +25,7 @@ public class User {
     private double longitude;
     private double latitude;
 
-    private ArrayList<Interest> interests;  // TODO: update this to use strings instead...
+    private ArrayList<String> interests;  // TODO: update this to use strings instead...
 
     public User() {
         // needed because dataSnapshot.getValue()
@@ -38,25 +38,27 @@ public class User {
     }
 
     // Interest related code
-    public ArrayList<Interest> getInterests() { return interests; }
+    public ArrayList<String> getInterests() { return interests; }
 
     public void addInterest(String str) {
-        Interest i = Interest.getInterest(str);
+        /*Interest i = Interest.getInterest(str);
         if (i != Interest.UNAVAILABLE && !interests.contains(i)) {
             interests.add(i);
-        }
+        }*/
+        interests.add(str);
     }
 
     public void removeInterest(String str) {
-        Interest i = Interest.getInterest(str);
-        interests.remove(i);
+        /*Interest i = Interest.getInterest(str);
+        interests.remove(i);*/
+        interests.add(str);
     }
 
     public void clearInterests() {
         interests.clear();
     }
 
-    public void replaceInterest(ArrayList<Interest> interests) {
+    public void replaceInterest(ArrayList<String> interests) {
         this.interests = interests;
     }
 
