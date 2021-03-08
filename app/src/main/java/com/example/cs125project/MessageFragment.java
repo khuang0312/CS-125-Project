@@ -26,7 +26,7 @@ public class MessageFragment extends Fragment {
     Interest recommendedInterest;
     int recommendedIntensity;
     int recommendedDuration;
-    Place recommendedPlace;
+    //Place recommendedPlace;
     User recommendedUser;
 
     //Used for getting info to inform activity recommendation
@@ -36,8 +36,8 @@ public class MessageFragment extends Fragment {
 
     //Used for informing Place and User recommendations
     ArrayList<String> interestForScoring = new ArrayList<String>();
-    int bestPlaceScore = 0;
-    int currPlaceScore = 0;
+    //int bestPlaceScore = 0;
+    //int currPlaceScore = 0;
     int bestUserScore = 0;
     int currUserScore = 0;
 
@@ -79,7 +79,7 @@ public class MessageFragment extends Fragment {
         });
 
         //Gathers info about the user's reports
-        Query orderLogs = dbRef.child("reports").orderByKey();
+        Query orderLogs = dbRef.child("users").child(username).child("reports").orderByKey();
         orderLogs.addListenerForSingleValueEvent(new ValueEventListener(){
             @Override
             public void onDataChange(DataSnapshot dataSnapshot){
@@ -116,7 +116,7 @@ public class MessageFragment extends Fragment {
         interestForScoring.add(Interest.getString(recommendedInterest));
 
         //Finds a Place to recommend the user based on proximity and the activity they were recommended
-        Query orderedPlaces = dbRef.child("places").orderByKey();
+        /*Query orderedPlaces = dbRef.child("places").orderByKey();
         orderedPlaces.addListenerForSingleValueEvent(new ValueEventListener(){
             @Override
             public void onDataChange(DataSnapshot dataSnapshot){
@@ -136,7 +136,7 @@ public class MessageFragment extends Fragment {
             public void onCancelled(DatabaseError error) {
                 Log.d("onCancelled", "triggered in the event that this listener either failed at the server, or is removed as a result of the security and Firebase Database rules.");
             }
-        });
+        });*/
 
         //Finds a User to match the current user based on proximity and the activity recommended
         Query orderedUsers = dbRef.child("users").orderByKey();
@@ -145,7 +145,7 @@ public class MessageFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot){
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                     User user2 = snapshot.getValue(User.class);
-                    //Skip if database user is the current user
+                    //Skip if the iterated user is the current user
                     if (username.equals(user2.getUsername())){
                         continue;
                     }
@@ -164,8 +164,8 @@ public class MessageFragment extends Fragment {
                 Log.d("onCancelled", "triggered in the event that this listener either failed at the server, or is removed as a result of the security and Firebase Database rules.");
             }
         });
-        Log.i("RECOMMENDATIONS", "Recommended " + Interest.getString(recommendedInterest) + " at " + recommendedIntensity + " intensity for " + recommendedDuration + "minutes");
-        Log.i("USER AND PLACE",  "Place " + recommendedPlace.getName() + " with " + recommendedUser.getUsername());
+        //Log.i("RECOMMENDATIONS", "Recommended " + Interest.getString(recommendedInterest) + " at " + recommendedIntensity + " intensity for " + recommendedDuration + "minutes");
+        //Log.i("USER AND PLACE",  "Place " + recommendedPlace.getName() + " with " + recommendedUser.getUsername());
 
         return view;
     }
