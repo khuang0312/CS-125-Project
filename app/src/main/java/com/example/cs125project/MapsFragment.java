@@ -13,23 +13,33 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONObject;
+
 public class MapsFragment extends Fragment {
     String username;
     double userLat = 0;
     double userLong = 0;
-
+    GoogleMap mMap;
     private final OnMapReadyCallback callback = new OnMapReadyCallback() {
 
         /**
@@ -43,9 +53,68 @@ public class MapsFragment extends Fragment {
          */
         @Override
         public void onMapReady(GoogleMap googleMap) {
-            LatLng sydney = new LatLng(userLat, userLong);
-            googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+            Places.initialize(getActivity().getApplicationContext(), "AIzaSyDmgABoOuT2Fy_LEq-QEHK9T1y3Ff6NPxQ");
+            PlacesClient placesClient = Places.createClient(getActivity().getApplicationContext());
+            mMap = googleMap;
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            //get username through shared preferences, check if it already exists in firebase
+            SharedPreferences sharedPref = getContext().getSharedPreferences(getString(R.string.username_shared_preference_key), getContext().MODE_PRIVATE);
+            username = sharedPref.getString("username", "noUsername");
+            DatabaseReference dbRef = database.getReference();
+            dbRef.child("users").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // This method is called once with the initial value and again
+                    // whenever data at this location is updated.
+                    User user = dataSnapshot.getValue(User.class);
+                    if (user != null) {
+                        Log.d("MapsFragment", "user found");
+                        userLat = user.getLatitude();
+                        userLong = user.getLongitude();
+                        Log.d("MapsFragment", Double.toString(userLat) + ", " + Double.toString(userLong));
+                        LatLng sydney = new LatLng(userLat, userLong);
+
+                        //make http request of relevant locations nearby
+                        RequestQueue queue = Volley.newRequestQueue(getActivity().getApplicationContext());
+
+                        //build request url
+
+                        //This IP, site or mobile application is not authorized to use this API key. Request received from IP address 99.90.74.90, with empty referer
+                        //temporarily removed restrictions entirely
+                        String key = "key=AIzaSyBcqrPk1ZYNinfBEAcSk47kkdq7HdyI71U";
+
+                        String location = "location="+ userLat + "," + userLong;
+                        String radius = "radius=50000";
+                        String keyword = "keyword=tennis court";
+                        String requestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" + keyword + "&" + location + "&" + radius + "&" + key;
+                        Log.d("Response", requestURL);
+                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
+
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Log.d("Response", response.toString());
+                                //textView.setText("Response: " + response.toString());
+                            }
+                        }, new Response.ErrorListener() {
+
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                // TODO: Handle error
+                                Log.d("Response", "failed");
+                            }
+                        });
+                        queue.add(jsonObjectRequest);
+                        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    Log.d("onCancelled", "triggered in the event that this listener either failed at the server, or is removed as a result of the security and Firebase Database rules.");
+                }
+            });
         }
     };
 

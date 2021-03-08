@@ -9,6 +9,7 @@ import java.util.List;
 //import javafx.util.Pair; //implementing Pair compatibility seems like too much of a pain
 
 public class Recommendation {
+
     //Scores the distance between two entities based on their lat-long coordinates
     static int locationScore(double lat1, double long1, double lat2, double long2) {
         int score = 0;
@@ -100,4 +101,10 @@ public class Recommendation {
         return recommended;
 
     }
+
+
+//    analyzeReports() {
+//        //parse reports, create
+//
+//    }
 }

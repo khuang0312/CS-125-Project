@@ -123,8 +123,8 @@ public class MessageFragment extends Fragment {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Place place = snapshot.getValue(Place.class);
                     currPlaceScore = 0;
-                    currPlaceScore += Recommendation.locationScore(userLat, userLong, place.getLatitude(), place.getLongitude());
-                    currPlaceScore += Recommendation.interestsScore(interestForScoring, place.getInterests());
+                    //currPlaceScore += Recommendation.locationScore(userLat, userLong, place.getLatitude(), place.getLongitude());
+                    //currPlaceScore += Recommendation.interestsScore(interestForScoring, place.getInterests());
                     if (bestPlaceScore < currPlaceScore) {
                         bestPlaceScore = currPlaceScore;
                         recommendedPlace = place;
@@ -150,8 +150,8 @@ public class MessageFragment extends Fragment {
                         continue;
                     }
                     currUserScore = 0;
-                    currUserScore += Recommendation.locationScore(userLat, userLong, user2.getLatitude(), user2.getLongitude());
-                    currUserScore += Recommendation.interestsScore(interestForScoring, user2.getInterests());
+                    //currUserScore += Recommendation.locationScore(userLat, userLong, user2.getLatitude(), user2.getLongitude());
+                    //currUserScore += Recommendation.interestsScore(interestForScoring, user2.getInterests());
                     if (bestUserScore < currUserScore) {
                         bestUserScore = currUserScore;
                         recommendedUser = user2;

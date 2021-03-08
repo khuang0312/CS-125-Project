@@ -72,7 +72,7 @@ public class User {
     public void setState(String state) { this.state = state; }
     public void setCountry(String country) { this.country = country; }
     public void setLatitude(double latitude) { this.latitude = latitude; }
-    public void setLongitude(double longitude) { this.longitude = latitude; }
+    public void setLongitude(double longitude) { this.longitude = longitude; }
 
     // GETTERS
     public String getUsername() { return username; }
