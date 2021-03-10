@@ -60,6 +60,7 @@ public class Recommendation {
     //Takes the average intensity
     static String getRecommendedIntensity(ArrayList<String> intensityList) {
         int intensityScore = 0;
+        double trueAverage = 0.0;
         for (String intensity : intensityList) {
             //Ints to be replaced with actual intensity level strings?
             if (intensity.equals("Low")){
@@ -74,11 +75,21 @@ public class Recommendation {
         }
 
         if (intensityList.size() != 0) {
-            intensityScore /= intensityList.size();
+            trueAverage = (double)intensityScore/intensityList.size();
         }
 
+        //Default value check here since the average cannot be below 1
+        if (trueAverage < 1){
+            return DEFAULT_VALUE;
+        } else if (trueAverage <= 1.5) {
+            return "Low";
+        } else if (1.5 < trueAverage && trueAverage <= 2.5) {
+            return "Medium";
+        } else {
+            return "High";
+        }
 
-        switch (intensityScore){
+        /*switch (intensityScore){
             case 1:
                 return "Low";
             case 2:
@@ -87,7 +98,7 @@ public class Recommendation {
                 return "High";
             default:
                 return DEFAULT_VALUE;
-        }
+        }*/
     }
 
     //Returns a recommended activity given the user reports
