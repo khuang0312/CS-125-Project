@@ -35,6 +35,6 @@ the corresponding directions.
        - Note: We ended up using the same API key for both Places/Maps.
       So if you end up setting up your own API key, check our setup for
       refrence first. The SHA-1 hash might also need to be set up again.
- - "Waiting for target device to come online"
-   - Refer to [this link](https://stackoverflow.com/questions/42816127/waiting-for-target-device-to-come-online)
+     - "Waiting for target device to come online"
+       - Refer to [this link](https://stackoverflow.com/questions/42816127/waiting-for-target-device-to-come-online)
 
