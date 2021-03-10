@@ -25,33 +25,31 @@ public class User {
     private double longitude;
     private double latitude;
 
-    private ArrayList<String> interests;  // TODO: update this to use strings instead...
+    private ArrayList<String> interests;
 
     public User() {
         // needed because dataSnapshot.getValue()
         // requires a class with a paramterless constructor
         this.username = "unknown";
+        interests = new ArrayList<String>();
     }
 
     public User(String username) {
         this.username = username; // usernames never change
+        interests = new ArrayList<String>();
     }
 
     // Interest related code
     public ArrayList<String> getInterests() { return interests; }
 
-    public void addInterest(String str) {
-        /*Interest i = Interest.getInterest(str);
-        if (i != Interest.UNAVAILABLE && !interests.contains(i)) {
-            interests.add(i);
-        }*/
-        interests.add(str);
+    public boolean addInterest(String str) {
+        return interests.add(str);
     }
 
-    public void removeInterest(String str) {
+    public boolean removeInterest(String str) {
         /*Interest i = Interest.getInterest(str);
         interests.remove(i);*/
-        interests.add(str);
+        return interests.remove(str);
     }
 
     public void clearInterests() {

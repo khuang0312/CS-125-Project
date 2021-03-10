@@ -23,16 +23,16 @@ import android.content.SharedPreferences;
 public class MessageFragment extends Fragment {
     //Global variables
     //Recommendations to be displayed
-    Interest recommendedInterest;
+    String recommendedInterest;
     String recommendedIntensity;
     int recommendedDuration;
     //Place recommendedPlace;
     User recommendedUser;
 
     //Used for getting info to inform activity recommendation
-    ArrayList<String> lastInterests;
-    ArrayList<Integer> lastIntensities;
-    ArrayList<Integer> lastDurations;
+    ArrayList<String> lastInterests = new ArrayList<String>();
+    ArrayList<String> lastIntensities  = new ArrayList<String>();
+    ArrayList<Integer> lastDurations  = new ArrayList<Integer>();
 
     //Used for informing Place and User recommendations
     ArrayList<String> interestForScoring = new ArrayList<String>();
@@ -49,12 +49,12 @@ public class MessageFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_message, container, false);
 
 
         //Initialize database and current user
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
         //Comment out to connect to the real database
         //database.useEmulator("10.0.2.2", 9000);
         DatabaseReference dbRef = database.getReference();
@@ -79,28 +79,39 @@ public class MessageFragment extends Fragment {
         });
 
         //Gathers info about the user's reports
-        Query orderLogs = dbRef.child("users").child(username).child("reports").orderByKey();
+        Query orderLogs = dbRef.child("users").child(username).child("reports").orderByKey().limitToLast(7);
         orderLogs.addListenerForSingleValueEvent(new ValueEventListener(){
             @Override
             public void onDataChange(DataSnapshot dataSnapshot){
                 Log.i("REPORTS", "Children in this snapshot: " + dataSnapshot.getChildrenCount());
+                lastIntensities = new ArrayList<String>();
+                lastInterests = new ArrayList<String>();
+                lastDurations = new ArrayList<Integer>();
+
+
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Report report = snapshot.getValue(Report.class);
-                    switch (report.getIntensity()) {
-                        case "Low":
-                            lastIntensities.add(1);
-                            break;
-                        case "Medium":
-                            lastIntensities.add(2);
-                            break;
-                        case "High":
-                            lastIntensities.add(3);
-                            break;
+                    if (snapshot.getKey().equals("count")) {
+                        continue;
                     }
+                    Report report = snapshot.getValue(Report.class);
+                    lastIntensities.add(report.getIntensity());
                     lastInterests.add(report.getCategory());
-                    lastDurations.add(report.getMin() + report.getHrs()*60);
-                    //Log.i("REPORT INFO", "Report processed: " + report.getSubmissionTime());
+                    lastDurations.add(report.getMinutesElapsed() + report.getHoursElapsed()*60);
+
                 }
+
+                //Feeds user report info to recommendation methods
+
+                recommendedInterest = Recommendation.getRecommendedInterest(lastInterests);
+                recommendedIntensity = Recommendation.getRecommendedIntensity(lastIntensities);
+                recommendedDuration = Recommendation.getRecommendedDuration(lastDurations);
+                interestForScoring.add(recommendedInterest);
+
+                // I believe this needs to be moved to the listener
+                Log.i("RECOMMENDATIONS", "Recommended activity: " + recommendedInterest);
+                Log.i("RECOMMENDATIONS", "Recommended intensity: " + recommendedIntensity);
+                Log.i("RECOMMENDATIONS", "Recommended time: " + recommendedDuration + " minutes");
+
             }
 
             @Override
@@ -109,11 +120,6 @@ public class MessageFragment extends Fragment {
             }
         });
 
-        //Feeds user report info to recommendation methods
-        recommendedInterest = Recommendation.getRecommendedInterest(lastInterests, 3);
-        recommendedIntensity = Recommendation.getRecommendedIntensity(lastIntensities, 3);
-        recommendedDuration = Recommendation.getRecommendedDuration(lastDurations, 3);
-        interestForScoring.add(Interest.getString(recommendedInterest));
 
         //Finds a Place to recommend the user based on proximity and the activity they were recommended
         /*Query orderedPlaces = dbRef.child("places").orderByKey();
@@ -143,6 +149,7 @@ public class MessageFragment extends Fragment {
         orderedUsers.addListenerForSingleValueEvent(new ValueEventListener(){
             @Override
             public void onDataChange(DataSnapshot dataSnapshot){
+                recommendedUser = null; // resets RecommendedUser, allows to account for if there are no other users to recommend
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                     User user2 = snapshot.getValue(User.class);
                     //Skip if the iterated user is the current user
@@ -157,6 +164,12 @@ public class MessageFragment extends Fragment {
                         recommendedUser = user2;
                     }
                 }
+
+                if (recommendedUser != null) {
+                    Log.i("RECOMMENDATIONS", "Recommended user: " + recommendedUser.getUsername());
+                } else {
+                    Log.i("RECOMMENDATIONS", "Recommended user: " + "NO USER RECOMMENDED");
+                }
             }
 
             @Override
@@ -164,10 +177,8 @@ public class MessageFragment extends Fragment {
                 Log.d("onCancelled", "triggered in the event that this listener either failed at the server, or is removed as a result of the security and Firebase Database rules.");
             }
         });
-        Log.i("RECOMMENDATIONS", "Recommended activity: " + Interest.getString(recommendedInterest));
-        Log.i("RECOMMENDATIONS", "Recommended intensity: " + recommendedIntensity);
-        Log.i("RECOMMENDATIONS", "Recommended time: " + recommendedDuration + " minutes");
-        Log.i("RECOMMENDATIONS", "Recommended user: " + recommendedUser.getUsername());
+
+
 
         return view;
     }
