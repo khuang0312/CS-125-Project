@@ -33,6 +33,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MapsFragment extends Fragment {
@@ -75,41 +77,36 @@ public class MapsFragment extends Fragment {
                         LatLng sydney = new LatLng(userLat, userLong);
 
                         //make http request of relevant locations nearby
-                        RequestQueue queue = Volley.newRequestQueue(getActivity().getApplicationContext());
 
-                        //build request url
-
-                        //This IP, site or mobile application is not authorized to use this API key. Request received from IP address 99.90.74.90, with empty referer
-                        //temporarily removed restrictions entirely
-                        String key = "key=AIzaSyBcqrPk1ZYNinfBEAcSk47kkdq7HdyI71U";
-
-                        String location = "location="+ userLat + "," + userLong;
-                        String radius = "radius=50000";
-                        String keyword = "keyword=tennis court";
-                        String requestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" + keyword + "&" + location + "&" + radius + "&" + key;
-                        Log.d("Response", requestURL);
-                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
-
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                Log.d("Response", response.toString());
-                                //textView.setText("Response: " + response.toString());
-                            }
-                        }, new Response.ErrorListener() {
-
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                // TODO: Handle error
-                                Log.d("Response", "failed");
-                            }
-                        });
-                        queue.add(jsonObjectRequest);
                         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
                         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
                     }
                 }
 
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    Log.d("onCancelled", "triggered in the event that this listener either failed at the server, or is removed as a result of the security and Firebase Database rules.");
+                }
+            });
+            dbRef.child("users").child(username).child("locations").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // This method is called once with the initial value and again
+                    // whenever data at this location is updated.
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        //snapshot.getKey(); = name of location
+                        if (snapshot.getKey().equals("count")) {
+                            continue;
+                        }
+                        PointOfInterest poi = snapshot.getValue(PointOfInterest.class);
+                        LatLng location = new LatLng(poi.getLatitude(), poi.getLongitude());
+
+                        //make http request of relevant locations nearby
+
+                        mMap.addMarker(new MarkerOptions().position(location).title(snapshot.getKey()));
+                    }
+                }
                 @Override
                 public void onCancelled(DatabaseError error) {
                     Log.d("onCancelled", "triggered in the event that this listener either failed at the server, or is removed as a result of the security and Firebase Database rules.");
