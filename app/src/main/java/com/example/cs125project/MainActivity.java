@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.username_shared_preference_key), this.MODE_PRIVATE);
         String userName = sharedPref.getString("username", null);
+        //userName = null;
         if (userName == null) {
             //username not yet received, launch LoginActivity
             //Intent myIntent = new Intent(this, LoginActivity.class);
