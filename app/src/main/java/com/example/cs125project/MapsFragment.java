@@ -1,7 +1,6 @@
 package com.example.cs125project;
 
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,7 +40,6 @@ import org.json.JSONObject;
 
 public class MapsFragment extends Fragment {
     String username;
-    String icon_str = "";
     double userLat = 0;
     double userLong = 0;
     GoogleMap mMap;
@@ -61,6 +59,9 @@ public class MapsFragment extends Fragment {
             Places.initialize(getActivity().getApplicationContext(), "AIzaSyDmgABoOuT2Fy_LEq-QEHK9T1y3Ff6NPxQ");
             PlacesClient placesClient = Places.createClient(getActivity().getApplicationContext());
             mMap = googleMap;
+            mMap.moveCamera(CameraUpdateFactory.zoomTo(10));
+
+
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             //get username through shared preferences, check if it already exists in firebase
             SharedPreferences sharedPref = getContext().getSharedPreferences(getString(R.string.username_shared_preference_key), getContext().MODE_PRIVATE);
@@ -77,12 +78,15 @@ public class MapsFragment extends Fragment {
                         userLat = user.getLatitude();
                         userLong = user.getLongitude();
                         Log.d("MapsFragment", Double.toString(userLat) + ", " + Double.toString(userLong));
-                        LatLng sydney = new LatLng(userLat, userLong);
+                        LatLng userLoc = new LatLng(userLat, userLong);
 
                         //make http request of relevant locations nearby
 
-                        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-                        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+                        mMap.addMarker(new MarkerOptions()
+                                .position(userLoc)
+                                .title("You are here!")
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLng(userLoc));
 
                     }
                 }
@@ -106,67 +110,8 @@ public class MapsFragment extends Fragment {
                         LatLng location = new LatLng(poi.getLatitude(), poi.getLongitude());
 
                         //make http request of relevant locations nearby
-                        switch (poi.getInterest()){
-                            case ("Walking"):
-                                icon_str = "baseline_directions_walk_black_18dp.png";
-                                break;
-                            case ("Running"):
-                                icon_str = "directions_run-24px.svg";
-                                break;
-                            case ("Swimming"):
-                                icon_str = "pool-24px.svg";
-                                break;
-                            case ("Climbing"):
-                                icon_str = "hiking-24px.svg";
-                                break;
-                            case ("Yoga"):
-                                icon_str = "self_improvement-24px.svg";
-                                break;
-                            case ("Badminton"):
-                                icon_str = "sports_handball-24px.svg";
-                                break;
-                            case ("Hockey"):
-                                icon_str = "sports_hockey-24px.svg";
-                                break;
-                            case ("Tennis"):
-                                icon_str = "sports_tennis-24px.svg";
-                                break;
-                            case ("Basketball"):
-                                icon_str = "sports_basketball-24px.svg";
-                                break;
-                            case ("Soccer"):
-                                icon_str = "sports_soccer-24px.svg";
-                                break;
-                            case ("Football"):
-                                icon_str = "sports_football-24px.svg";
-                                break;
-                            case ("Baseball"):
-                                icon_str = "sports_baseball-24px.svg";
-                                break;
-                            case ("Golf"):
-                                icon_str = "sports_golf-24px.svg";
-                                break;
-                            case ("Pilates"):
-                                icon_str = "fitness_center-24px.svg";
-                                break;
-                            case ("Parkour"):
-                                icon_str = "domain-24px.svg";
-                                break;
-                            case ("Dancing"):
-                                icon_str = "nightlife-24px.svg";
-                                break;
-                            case ("Lacrosse"):
-                                icon_str = "sports_cricket-24px.svg";
-                                break;
-                            case ("Wrestling"):
-                                icon_str = "sports_kabaddi-24px.svg";
-                                break;
-                            case ("MMA"):
-                                icon_str = "sports_mma-24px.svg";
-                                break;
-                        }
 
-                        mMap.addMarker(new MarkerOptions().position(location).title(snapshot.getKey()).icon(BitmapDescriptorFactory.fromAsset(icon_str)));
+                        mMap.addMarker(new MarkerOptions().position(location).title(poi.getName()));
                     }
                 }
                 @Override
