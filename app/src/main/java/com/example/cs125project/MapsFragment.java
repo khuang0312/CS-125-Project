@@ -23,6 +23,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.Places;
@@ -58,7 +59,7 @@ public class MapsFragment extends Fragment {
             Places.initialize(getActivity().getApplicationContext(), "AIzaSyDmgABoOuT2Fy_LEq-QEHK9T1y3Ff6NPxQ");
             PlacesClient placesClient = Places.createClient(getActivity().getApplicationContext());
             mMap = googleMap;
-            mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+            mMap.moveCamera(CameraUpdateFactory.zoomTo(10));
 
 
             FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -81,7 +82,10 @@ public class MapsFragment extends Fragment {
 
                         //make http request of relevant locations nearby
 
-                        mMap.addMarker(new MarkerOptions().position(userLoc).title("You are here!"));
+                        mMap.addMarker(new MarkerOptions()
+                                .position(userLoc)
+                                .title("You are here!")
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
                         mMap.moveCamera(CameraUpdateFactory.newLatLng(userLoc));
 
                     }
