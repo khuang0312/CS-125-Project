@@ -1,6 +1,8 @@
 package com.example.cs125project;
 
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +25,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -81,11 +84,14 @@ public class MapsFragment extends Fragment {
                         LatLng userLoc = new LatLng(userLat, userLong);
 
                         //make http request of relevant locations nearby
+                        //
+                        // BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)
 
                         mMap.addMarker(new MarkerOptions()
                                 .position(userLoc)
                                 .title("You are here!")
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                                .icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.test)))
+                        );
                         mMap.moveCamera(CameraUpdateFactory.newLatLng(userLoc));
 
                     }
