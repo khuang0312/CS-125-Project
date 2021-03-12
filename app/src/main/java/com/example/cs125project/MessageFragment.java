@@ -26,11 +26,12 @@ import android.widget.TextView;
 public class MessageFragment extends Fragment {
     //Global variables
     //Recommendations to be displayed
-    String recommendedInterest;
-    String recommendedIntensity;
+    // most String and Object variables intialized to avoid NullReferenceException
+    String recommendedInterest = "";
+    String recommendedIntensity = "";
     int recommendedDuration;
     PointOfInterest recommendedPlace;
-    User recommendedUser;
+    User recommendedUser = new User();
 
     //Used for getting info to inform activity recommendation
     ArrayList<String> lastInterests = new ArrayList<String>();
@@ -45,7 +46,7 @@ public class MessageFragment extends Fragment {
     int currUserScore = 0;
 
     //User's info, used for informing recommendations
-    String username;
+    String username = "";
     double userLat;
     double userLong;
 
@@ -67,7 +68,6 @@ public class MessageFragment extends Fragment {
         SharedPreferences sharedPref = view.getContext().getSharedPreferences(getString(R.string.username_shared_preference_key), view.getContext().MODE_PRIVATE);
         username = sharedPref.getString("username", "noUsername");
         mActivity = (TextView)view.findViewById(R.id.activity);
-        mPlace = (TextView)view.findViewById(R.id.place);
         mUser = (TextView)view.findViewById(R.id.rec_user);
 
         //Only used to get the user's latitude and longitude
@@ -115,7 +115,15 @@ public class MessageFragment extends Fragment {
                 recommendedIntensity = Recommendation.getRecommendedIntensity(lastIntensities);
                 recommendedDuration = Recommendation.getRecommendedDuration(lastDurations);
                 interestForScoring.add(recommendedInterest);
-                mActivity.setText(recommendedInterest + " at " + recommendedIntensity + " intensity for " + recommendedDuration + " minutes");
+
+                if (recommendedInterest.equals(Recommendation.DEFAULT_VALUE) ||
+                recommendedUser.equals(Recommendation.DEFAULT_VALUE) || recommendedDuration == 0) {
+                    mActivity.setText(Recommendation.DEFAULT_VALUE + ": Submit some reports!");
+                } else {
+                    mActivity.setText(recommendedInterest + " at " + recommendedIntensity + " intensity for " + recommendedDuration + " minutes");
+                }
+
+
 
                 // I believe this needs to be moved to the listener
                 //Log.i("RECOMMENDATIONS", "Recommended activity: " + recommendedInterest);
@@ -131,43 +139,7 @@ public class MessageFragment extends Fragment {
         });
 
 
-        Query orderPlaces = dbRef.child("users").child(username).child("locations").orderByKey();
-        orderPlaces.addListenerForSingleValueEvent((new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                String bestPlaceName = "";
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    //snapshot.getKey(); = name of location
-                    if (snapshot.getKey().equals("count")) {
-                        continue;
-                    }
-                    PointOfInterest poi = snapshot.getValue(PointOfInterest.class);
-                    ArrayList<String> poiInterest = new ArrayList<String>();
-                    poiInterest.add(poi.getInterest());
-                    currPlaceScore = 0;
-                    currPlaceScore += Recommendation.locationScore(userLat, userLong, poi.getLatitude(), poi.getLongitude());
-                    currPlaceScore += Recommendation.interestsScore(interestForScoring, poiInterest);
-                    if (bestPlaceScore < currPlaceScore){
-                        bestPlaceScore = currPlaceScore;
-                        recommendedPlace = poi;
-                        bestPlaceName = snapshot.getKey();
-                    }
-                }
-                if (!bestPlaceName.equals("")){
-                    mPlace.setText(bestPlaceName);
-                    //Log.i("RECOMMENDATIONS", "Recommended place: " + bestPlaceName);
-                } else {
-                    mPlace.setText("NO PLACE RECOMMENDED");
-                    //Log.i("RECOMMENDATIONS", "Recommended place: " + "NO PLACE RECOMMENDED");
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError error) {
-                Log.d("onCancelled", "triggered in the event that this listener either failed at the server, or is removed as a result of the security and Firebase Database rules.");
-            }
-        }));
+
 
         //Finds a User to match the current user based on proximity and the activity recommended
         Query orderedUsers = dbRef.child("users").orderByKey();
@@ -194,7 +166,7 @@ public class MessageFragment extends Fragment {
                     mUser.setText(recommendedUser.getUsername());
                     //Log.i("RECOMMENDATIONS", "Recommended user: " + recommendedUser.getUsername());
                 } else {
-                    mUser.setText("NO USER RECOMMENDED");
+                    mUser.setText(Recommendation.DEFAULT_VALUE + ": NO USER RECOMMENDED");
                     //Log.i("RECOMMENDATIONS", "Recommended user: " + "NO USER RECOMMENDED");
                 }
             }
