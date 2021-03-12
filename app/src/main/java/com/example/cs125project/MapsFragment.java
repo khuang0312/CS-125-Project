@@ -1,6 +1,7 @@
 package com.example.cs125project;
 
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -43,6 +44,7 @@ import org.json.JSONObject;
 
 public class MapsFragment extends Fragment {
     String username;
+    Bitmap bMap;
     double userLat = 0;
     double userLong = 0;
     GoogleMap mMap;
@@ -84,14 +86,11 @@ public class MapsFragment extends Fragment {
                         LatLng userLoc = new LatLng(userLat, userLong);
 
                         //make http request of relevant locations nearby
-                        //
-                        // BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)
 
                         mMap.addMarker(new MarkerOptions()
                                 .position(userLoc)
                                 .title("You are here!")
-                                .icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.test)))
-                        );
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
                         mMap.moveCamera(CameraUpdateFactory.newLatLng(userLoc));
 
                     }
@@ -117,7 +116,67 @@ public class MapsFragment extends Fragment {
 
                         //make http request of relevant locations nearby
 
-                        mMap.addMarker(new MarkerOptions().position(location).title(poi.getName()));
+                        switch (poi.getInterest()){
+                            case ("Walking"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.walking);
+                                break;
+                            case ("Running"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.running);
+                                break;
+                            case ("Swimming"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.swimming);
+                                break;
+                            case ("Climbing"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.climbing);
+                                break;
+                            case ("Yoga"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.yoga);
+                                break;
+                            case ("Badminton"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.badminton);
+                                break;
+                            case ("Hockey"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.hockey);
+                                break;
+                            case ("Tennis"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.tennis);
+                                break;
+                            case ("Basketball"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.basketball);
+                                break;
+                            case ("Soccer"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.soccer);
+                                break;
+                            case ("Football"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.football);
+                                break;
+                            case ("Baseball"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.baseball);
+                                break;
+                            case ("Golf"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.golf);
+                                break;
+                            case ("Pilates"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.pilates);
+                                break;
+                            case ("Parkour"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.parkour);
+                                break;
+                            case ("Dancing"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.dancing);
+                                break;
+                            case ("Lacrosse"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.lacrosse);
+                                break;
+                            case ("Wrestling"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.wrestling);
+                                break;
+                            case ("MMA"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.mma);
+                                break;
+                        }
+
+                        mMap.addMarker(new MarkerOptions().position(location).title(poi.getName()).icon(BitmapDescriptorFactory.fromBitmap(bMap)));
                     }
                 }
                 @Override
