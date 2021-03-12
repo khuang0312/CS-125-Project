@@ -1,6 +1,9 @@
 package com.example.cs125project;
 
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +26,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.Places;
@@ -39,6 +44,7 @@ import org.json.JSONObject;
 
 public class MapsFragment extends Fragment {
     String username;
+    Bitmap bMap;
     double userLat = 0;
     double userLong = 0;
     GoogleMap mMap;
@@ -58,6 +64,9 @@ public class MapsFragment extends Fragment {
             Places.initialize(getActivity().getApplicationContext(), "AIzaSyDmgABoOuT2Fy_LEq-QEHK9T1y3Ff6NPxQ");
             PlacesClient placesClient = Places.createClient(getActivity().getApplicationContext());
             mMap = googleMap;
+            mMap.moveCamera(CameraUpdateFactory.zoomTo(10));
+
+
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             //get username through shared preferences, check if it already exists in firebase
             SharedPreferences sharedPref = getContext().getSharedPreferences(getString(R.string.username_shared_preference_key), getContext().MODE_PRIVATE);
@@ -74,12 +83,15 @@ public class MapsFragment extends Fragment {
                         userLat = user.getLatitude();
                         userLong = user.getLongitude();
                         Log.d("MapsFragment", Double.toString(userLat) + ", " + Double.toString(userLong));
-                        LatLng sydney = new LatLng(userLat, userLong);
+                        LatLng userLoc = new LatLng(userLat, userLong);
 
                         //make http request of relevant locations nearby
 
-                        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-                        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+                        mMap.addMarker(new MarkerOptions()
+                                .position(userLoc)
+                                .title("You are here!")
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLng(userLoc));
 
                     }
                 }
@@ -104,7 +116,67 @@ public class MapsFragment extends Fragment {
 
                         //make http request of relevant locations nearby
 
-                        mMap.addMarker(new MarkerOptions().position(location).title(poi.getName()));
+                        switch (poi.getInterest()){
+                            case ("Walking"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.walking);
+                                break;
+                            case ("Running"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.running);
+                                break;
+                            case ("Swimming"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.swimming);
+                                break;
+                            case ("Climbing"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.climbing);
+                                break;
+                            case ("Yoga"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.yoga);
+                                break;
+                            case ("Badminton"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.badminton);
+                                break;
+                            case ("Hockey"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.hockey);
+                                break;
+                            case ("Tennis"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.tennis);
+                                break;
+                            case ("Basketball"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.basketball);
+                                break;
+                            case ("Soccer"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.soccer);
+                                break;
+                            case ("Football"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.football);
+                                break;
+                            case ("Baseball"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.baseball);
+                                break;
+                            case ("Golf"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.golf);
+                                break;
+                            case ("Pilates"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.pilates);
+                                break;
+                            case ("Parkour"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.parkour);
+                                break;
+                            case ("Dancing"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.dancing);
+                                break;
+                            case ("Lacrosse"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.lacrosse);
+                                break;
+                            case ("Wrestling"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.wrestling);
+                                break;
+                            case ("MMA"):
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.mma);
+                                break;
+                        }
+
+                        mMap.addMarker(new MarkerOptions().position(location).title(poi.getName()).icon(BitmapDescriptorFactory.fromBitmap(bMap)));
                     }
                 }
                 @Override
