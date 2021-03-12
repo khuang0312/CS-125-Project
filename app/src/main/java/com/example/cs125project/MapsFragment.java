@@ -108,7 +108,7 @@ public class MapsFragment extends Fragment {
                         //make http request of relevant locations nearby
                         switch (poi.getInterest()){
                             case ("Walking"):
-                                icon_str = "directions_walk-24px.svg";
+                                icon_str = "baseline_directions_walk_black_18dp.png";
                                 break;
                             case ("Running"):
                                 icon_str = "directions_run-24px.svg";
