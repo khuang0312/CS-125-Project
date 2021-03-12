@@ -274,6 +274,7 @@ public class ReportFragment extends Fragment {
                             keyword = "keyword=" + keyword;
                             String requestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" + keyword + "&" + location + "&" + radius + "&" + key;
                             Log.d("Response", requestURL);
+                            final String currentInterest = currentKeyword;
                             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
 
                                 @Override
@@ -292,7 +293,7 @@ public class ReportFragment extends Fragment {
                                             PointOfInterest poi =  new PointOfInterest();
                                             poi.setLatitude(latResponse);
                                             poi.setLongitude(longResponse);
-                                            poi.setInterest(currentKeyword);
+                                            poi.setInterest(currentInterest);
                                             poi.setName(nameResponse);
 
                                             FirebaseDatabase database = FirebaseDatabase.getInstance();
