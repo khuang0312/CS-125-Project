@@ -23,7 +23,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.Places;
@@ -38,14 +37,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashSet;
-
 public class MapsFragment extends Fragment {
     String username;
     double userLat = 0;
     double userLong = 0;
     GoogleMap mMap;
-    HashSet<String> placeIdLocations;
     private final OnMapReadyCallback callback = new OnMapReadyCallback() {
 
         /**
@@ -78,14 +74,12 @@ public class MapsFragment extends Fragment {
                         userLat = user.getLatitude();
                         userLong = user.getLongitude();
                         Log.d("MapsFragment", Double.toString(userLat) + ", " + Double.toString(userLong));
-                        LatLng userLoc = new LatLng(userLat, userLong);
+                        LatLng sydney = new LatLng(userLat, userLong);
 
                         //make http request of relevant locations nearby
 
-                        mMap.addMarker(new MarkerOptions()
-                                        .position(userLoc)
-                                        .title("You are here!").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-                        mMap.moveCamera(CameraUpdateFactory.newLatLng(userLoc));
+                        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
                     }
                 }
@@ -100,16 +94,10 @@ public class MapsFragment extends Fragment {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     // This method is called once with the initial value and again
                     // whenever data at this location is updated.
-                    placeIdLocations = new HashSet<String>();
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         //snapshot.getKey(); = name of location
                         if (snapshot.getKey().equals("count")) {
                             continue;
-                        }
-                        if (placeIdLocations.contains(snapshot.getKey())) {
-                            continue;
-                        } else {
-                            placeIdLocations.add(snapshot.getKey());
                         }
                         PointOfInterest poi = snapshot.getValue(PointOfInterest.class);
                         LatLng location = new LatLng(poi.getLatitude(), poi.getLongitude());
