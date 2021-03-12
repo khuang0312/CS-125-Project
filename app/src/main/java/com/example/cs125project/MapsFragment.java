@@ -58,6 +58,9 @@ public class MapsFragment extends Fragment {
             Places.initialize(getActivity().getApplicationContext(), "AIzaSyDmgABoOuT2Fy_LEq-QEHK9T1y3Ff6NPxQ");
             PlacesClient placesClient = Places.createClient(getActivity().getApplicationContext());
             mMap = googleMap;
+            mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+
+
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             //get username through shared preferences, check if it already exists in firebase
             SharedPreferences sharedPref = getContext().getSharedPreferences(getString(R.string.username_shared_preference_key), getContext().MODE_PRIVATE);
@@ -74,12 +77,12 @@ public class MapsFragment extends Fragment {
                         userLat = user.getLatitude();
                         userLong = user.getLongitude();
                         Log.d("MapsFragment", Double.toString(userLat) + ", " + Double.toString(userLong));
-                        LatLng sydney = new LatLng(userLat, userLong);
+                        LatLng userLoc = new LatLng(userLat, userLong);
 
                         //make http request of relevant locations nearby
 
-                        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-                        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+                        mMap.addMarker(new MarkerOptions().position(userLoc).title("You are here!"));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLng(userLoc));
 
                     }
                 }
