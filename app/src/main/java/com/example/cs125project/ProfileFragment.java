@@ -43,7 +43,7 @@ import java.util.Map;
 
 public class ProfileFragment extends Fragment {
     private final Uri selectedImage = null;
-    String username;
+    String username = "";
     User currentUser;
 
     // global variables to save selected profile location
@@ -61,6 +61,9 @@ public class ProfileFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        SharedPreferences sharedPref = getContext().getSharedPreferences(getString(R.string.username_shared_preference_key), Context.MODE_PRIVATE);
+        username = sharedPref.getString("username", null);
+
         Log.d("ProfileFragment", "Begin initialization");
         final View view = inflater.inflate(R.layout.fragment_profile, container, false);
         ImageButton profileImage = view.findViewById(R.id.profile_avatar);
@@ -121,8 +124,6 @@ public class ProfileFragment extends Fragment {
         // has changed in database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         //get username through shared preferences, check if it already exists in firebase
-        SharedPreferences sharedPref = view.getContext().getSharedPreferences(getString(R.string.username_shared_preference_key), view.getContext().MODE_PRIVATE);
-        username = sharedPref.getString("username", "noUsername");
         Log.d("ProfileFragment", username);
         DatabaseReference dbRef = database.getReference();
         dbRef.child("users").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -176,6 +177,7 @@ public class ProfileFragment extends Fragment {
                 EditText age = view.findViewById(R.id.profile_age);
                 TextView location = view.findViewById(R.id.location_display);
 
+                updatedUser.setUsername(username);
                 updatedUser.setName(name.getText().toString());
                 updatedUser.setEmail(email.getText().toString());
                 updatedUser.setAge(age.getText().toString());
