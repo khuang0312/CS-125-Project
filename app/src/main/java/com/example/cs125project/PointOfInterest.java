@@ -4,6 +4,7 @@ public class PointOfInterest {
     private double longitude;
     private double latitude;
     private String Interest;
+    private String name;
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
@@ -27,5 +28,13 @@ public class PointOfInterest {
 
     public String getInterest() {
         return Interest;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 }

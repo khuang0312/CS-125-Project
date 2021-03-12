@@ -37,8 +37,7 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".LoginActivity">
-        </activity>
+
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -48,16 +47,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity-alias
-            android:name="com.example.cs125project.alias"
-            android:targetActivity="MainActivity"
-            android:enabled="false">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity-alias>
+        <activity android:name=".LoginActivity"/>
+        <!--        <activity-alias-->
+<!--            android:name="com.example.cs125project.alias"-->
+<!--            android:targetActivity="MainActivity"-->
+<!--            android:enabled="false">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity-alias>-->
     </application>
 
 </manifest>

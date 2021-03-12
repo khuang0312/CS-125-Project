@@ -284,21 +284,22 @@ public class ReportFragment extends Fragment {
                                         JSONArray array = response.getJSONArray("results");
                                         for (int i = 0; i < array.length(); i++) {
                                             numLocations += 1;
+                                            String placeIDResponse = array.getJSONObject(i).getString("place_id");
                                             Double longResponse = array.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").getDouble("lng");
                                             Double latResponse = array.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").getDouble("lat");
                                             String nameResponse = array.getJSONObject(i).getString("name");
-                                            String interestResponse = currentKeyword;
 
                                             PointOfInterest poi =  new PointOfInterest();
                                             poi.setLatitude(latResponse);
                                             poi.setLongitude(longResponse);
                                             poi.setInterest(currentKeyword);
+                                            poi.setName(nameResponse);
 
                                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                                             DatabaseReference dbRef = database.getReference();
                                             //locations: key is name, value is pair <double latitude, double longitude>
                                             dbRef.child("users").child(username).child("locations").child("count").setValue(numLocations);
-                                            dbRef.child("users").child(username).child("locations").child(nameResponse).setValue(poi);
+                                            dbRef.child("users").child(username).child("locations").child(placeIDResponse).setValue(poi);
                                             //.getDouble("lat")
 //                                            Log.d("ResponseLat", latResponse.toString());
 //                                            Log.d("ResponseLong", latResponse.toString());

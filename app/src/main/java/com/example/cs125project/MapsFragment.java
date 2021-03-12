@@ -104,7 +104,7 @@ public class MapsFragment extends Fragment {
 
                         //make http request of relevant locations nearby
 
-                        mMap.addMarker(new MarkerOptions().position(location).title(snapshot.getKey()));
+                        mMap.addMarker(new MarkerOptions().position(location).title(poi.getName()));
                     }
                 }
                 @Override
