@@ -23,6 +23,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.Places;
@@ -77,12 +78,14 @@ public class MapsFragment extends Fragment {
                         userLat = user.getLatitude();
                         userLong = user.getLongitude();
                         Log.d("MapsFragment", Double.toString(userLat) + ", " + Double.toString(userLong));
-                        LatLng sydney = new LatLng(userLat, userLong);
+                        LatLng userLoc = new LatLng(userLat, userLong);
 
                         //make http request of relevant locations nearby
 
-                        mMap.addMarker(new MarkerOptions().position(sydney).title("You are here!"));
-                        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+                        mMap.addMarker(new MarkerOptions()
+                                        .position(userLoc)
+                                        .title("You are here!").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLng(userLoc));
 
                     }
                 }
