@@ -1,14 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@android:color/holo_red_light">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_light">
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Message Fragment"
+        android:layout_height="144dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="29dp"
+        android:layout_marginEnd="9dp"
+        android:layout_marginBottom="558dp"
+        android:text="Based on your last 3 days, you should do:"
+        android:textAlignment="center"
+        android:textSize="36sp" />
+
+    <TextView
+        android:id="@+id/activity"
+        android:layout_width="wrap_content"
+        android:layout_height="92dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="19dp"
+        android:layout_marginEnd="13dp"
+        android:layout_marginBottom="442dp"
+        android:text="ACTIVITY at INT intensity for MM minutes"
+        android:textAlignment="center"
         android:textSize="30sp"
-        android:layout_centerInParent="true"/>
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="178dp"
+        android:layout_marginEnd="174dp"
+        android:layout_marginBottom="374dp"
+        android:text="at:"
+        android:textAlignment="center"
+        android:textSize="36sp" />
+
+    <TextView
+        android:id="@+id/place"
+        android:layout_width="379dp"
+        android:layout_height="106dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="19dp"
+        android:layout_marginEnd="13dp"
+        android:layout_marginBottom="248dp"
+        android:text="PLACE"
+        android:textAlignment="center"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="132dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="142dp"
+        android:layout_marginEnd="136dp"
+        android:layout_marginBottom="180dp"
+        android:text="with:"
+        android:textAlignment="center"
+        android:textSize="36sp" />
+
+    <TextView
+        android:id="@+id/rec_user"
+        android:layout_width="263dp"
+        android:layout_height="91dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="74dp"
+        android:layout_marginEnd="73dp"
+        android:layout_marginBottom="66dp"
+        android:text="USER"
+        android:textAlignment="center"
+        android:textSize="30sp"
+        android:textStyle="bold" />
 
 
 </RelativeLayout>
