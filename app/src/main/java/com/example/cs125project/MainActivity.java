@@ -3,6 +3,7 @@ package com.example.cs125project;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -84,6 +85,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_report:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new ReportFragment()).commit();
+                break;
+            case R.id.toggleInterest1:
+                // Log.d("MAP_MENU", "toggled Interest 1");
+                break;
+            case R.id.toggleInterest2:
+                // Log.d("MAP_MENU", "toggled Interest 2");
+                break;
+            case R.id.toggleInterest3:
+                // Log.d("MAP_MENU", "toggled Interest 3");
+                break;
+
         }
         return true;
     }
@@ -95,14 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             super.onBackPressed();
         }
     }
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     *
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+
+
+
 }

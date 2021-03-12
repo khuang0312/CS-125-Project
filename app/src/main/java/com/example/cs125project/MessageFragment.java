@@ -3,6 +3,8 @@ package com.example.cs125project;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -12,6 +14,8 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.internal.NavigationMenu;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -108,6 +112,14 @@ public class MessageFragment extends Fragment {
                     lastDurations.add(report.getMinutesElapsed() + report.getHoursElapsed()*60);
 
                 }
+
+                // access map menu
+                // disable or enable toggle options in map menu...
+                // replace the images and toggle option text
+
+
+
+
 
                 //Feeds user report info to recommendation methods
 

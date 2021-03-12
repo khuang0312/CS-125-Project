@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">CS125Project</string>
 
-    <string name = "navigation_drawer_open">Open navigation drawer</string>
-    <string name = "navigation_drawer_close">Close navigation drawer</string>
-    <string name = "username_shared_preference_key">sharedPrefUN</string>
-    <string name = "google_maps_key">AIzaSyBcqrPk1ZYNinfBEAcSk47kkdq7HdyI71U</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="username_shared_preference_key">sharedPrefUN</string>
+    <string name="google_maps_key">AIzaSyBcqrPk1ZYNinfBEAcSk47kkdq7HdyI71U</string>
     <string name="enter_your_name">Enter your name</string>
     <string name="enter_email_here">Enter email here</string>
     <string name="enter_age_here">Enter age here</string>
@@ -32,4 +32,6 @@
     <string name="low_intensity_option">Low</string>
     <string name="med_intensity_option">Medium</string>
     <string name="high_intensity_option">High</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

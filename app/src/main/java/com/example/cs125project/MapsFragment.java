@@ -116,6 +116,8 @@ public class MapsFragment extends Fragment {
 
                         //make http request of relevant locations nearby
 
+                        // only display the interest currently toggled
+
                         switch (poi.getInterest()){
                             case ("Walking"):
                                 bMap = BitmapFactory.decodeResource(getResources(), R.drawable.walking);
