@@ -16,27 +16,6 @@
         <item android:id="@+id/nav_report"
             android:icon="@drawable/ic_message"
             android:title="Report Exercise Activity"></item>
-        <item android:id="@+id/map_menu"
-            android:title="Map Settings">
-            <menu>
-                <group android:checkableBehavior="single">
-                    <item android:id="@+id/toggleInterest1"
-                        android:icon="@drawable/basketball"
-                        android:checkable="true"
-                        android:visible="true"
-                        android:title="Interest 1"></item>
-                    <item android:id="@+id/toggleInterest2"
-                        android:icon="@drawable/basketball"
-                        android:checkable="true"
-                        android:visible="true"
-                        android:title="Interest 2"></item>
-                    <item android:id="@+id/toggleInterest3"
-                        android:icon="@drawable/basketball"
-                        android:checkable="true"
-                        android:visible="true"
-                        android:title="Interest 3"></item>
-                </group>
-            </menu>
-        </item>
+
     </group>
 </menu>

@@ -27,6 +27,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AddressComponent;
 import com.google.android.libraries.places.api.model.Place;
@@ -45,6 +46,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -61,8 +63,10 @@ public class ReportFragment extends Fragment {
     HashSet<String> lastInterests;
     double userLat;
     double userLong;
-    String currentKeyword;
     int numLocations;
+
+    String currentInterest; // needed to pass current Interest... through
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -159,6 +163,7 @@ public class ReportFragment extends Fragment {
         saveDataBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // create a Report object
                 Report report = new Report();
                 report.setDatetime();
                 report.setCategory(reportCategoryET.getText().toString());
@@ -166,12 +171,10 @@ public class ReportFragment extends Fragment {
                 report.setMinutesElapsed(Integer.parseInt(reportMinET.getText().toString()));
                 report.setHoursElapsed(Integer.parseInt(reportHoursET.getText().toString()));
 
-                Log.d("DATE", Calendar.getInstance().toString() );
-
-
+                // write report to database
                 numReports += 1;
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference dbRef = database.getReference();
+                final DatabaseReference dbRef = database.getReference();
 
                 dbRef.child("users").child(username).child("reports").child("count").setValue(numReports);
                 dbRef.child("users").child(username).child("reports").child(Long.toString(numReports)).setValue(report);
@@ -186,18 +189,17 @@ public class ReportFragment extends Fragment {
                     public void onDataChange(DataSnapshot dataSnapshot){
                         Log.i("REPORTS", "Children in this snapshot: " + dataSnapshot.getChildrenCount());
                         lastInterests = new HashSet<String>();
-
-
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                             if (snapshot.getKey().equals("count") ) {
                                 continue;
                             }
 
+
                             Report report = snapshot.getValue(Report.class);
-                            if (lastInterests.contains(report.getCategory())) {
+                            if(!lastInterests.add(report.getCategory())) {
                                 continue;
-                            } //if interest is new,
-                            lastInterests.add(report.getCategory());
+                            }
+                            Log.d("Report interest:", report.getCategory());
                             //queue a json
                             RequestQueue queue = Volley.newRequestQueue(getActivity().getApplicationContext());
 
@@ -206,72 +208,10 @@ public class ReportFragment extends Fragment {
                             //This IP, site or mobile application is not authorized to use this API key. Request received from IP address 99.90.74.90, with empty referer
                             //temporarily removed restrictions entirely
                             String key = "key=AIzaSyBcqrPk1ZYNinfBEAcSk47kkdq7HdyI71U";
-
-                            String location = "location="+ userLat + "," + userLong;
+                            final String location = "location="+ userLat + "," + userLong;
                             String radius = "radius=50000";
-                            String keyword = "";
-                            switch(report.getCategory()) {
-                                case ("Walking"):
-                                    keyword = "hiking trail";
-                                    break;
-                                case ("Running"):
-                                    keyword = "jogging trail";
-                                    break;
-                                case ("Swimming"):
-                                    keyword = "swimming pool";
-                                    break;
-                                case ("Climbing"):
-                                    keyword = "climbing gym";
-                                    break;
-                                case ("Yoga"):
-                                    keyword = "yoga studio";
-                                    break;
-                                case ("Badminton"):
-                                    keyword = "play badminton here";
-                                    break;
-                                case ("Hockey"):
-                                    keyword = "play hockey here";
-                                    break;
-                                case ("Tennis"):
-                                    keyword = "tennis center court";
-                                    break;
-                                case ("Basketball"):
-                                    keyword = "play basketball here";
-                                    break;
-                                case ("Soccer"):
-                                    keyword = "play soccer here";
-                                    break;
-                                case ("Football"):
-                                    keyword = "play football here";
-                                    break;
-                                case ("Baseball"):
-                                    keyword = "play baseball here";
-                                    break;
-                                case ("Golf"):
-                                    keyword = "play golf here";
-                                    break;
-                                case ("Pilates"):
-                                    keyword = "pilates";
-                                    break;
-                                case ("Parkour"):
-                                    keyword = "parkour school";
-                                    break;
-                                case ("Dancing"):
-                                    keyword = "dance center";
-                                    break;
-                                case ("Lacrosse"):
-                                    keyword = "play lacrosse here";
-                                    break;
-                                case ("Wrestling"):
-                                    keyword = "go wrestling";
-                                    break;
-                                case ("MMA"):
-                                    keyword = "mma gym school";
-                                    break;
-
-                            }
-                            currentKeyword = report.getCategory();
-                            keyword = "keyword=" + keyword;
+                            currentInterest = report.getCategory();
+                            String keyword = "keyword=" + getRequestKeyword(currentInterest);
                             String requestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" + keyword + "&" + location + "&" + radius + "&" + key;
                             Log.d("Response", requestURL);
                             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONObject>() {
@@ -289,10 +229,18 @@ public class ReportFragment extends Fragment {
                                             Double latResponse = array.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").getDouble("lat");
                                             String nameResponse = array.getJSONObject(i).getString("name");
 
+                                            // read from database to check if location is there already
+                                            // if location is there, add interest to the interests array, else write there
+
+
+
                                             PointOfInterest poi =  new PointOfInterest();
                                             poi.setLatitude(latResponse);
                                             poi.setLongitude(longResponse);
-                                            poi.setInterest(currentKeyword);
+
+                                            ArrayList<String> interests = new ArrayList<String>();
+                                            interests.add(currentInterest);
+                                            poi.setInterests(interests);
                                             poi.setName(nameResponse);
 
                                             FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -324,11 +272,6 @@ public class ReportFragment extends Fragment {
                             });
                             queue.add(jsonObjectRequest);
                         }
-                        //reset values to default
-//                        report.setCategory(reportCategoryET.getText().toString());
-//                        report.setIntensity(reportIntensityET.getText().toString());
-//                        report.setMinutesElapsed(Integer.parseInt(reportMinET.getText().toString()));
-//                        report.setHoursElapsed(Integer.parseInt(reportHoursET.getText().toString()));
                         Toast.makeText(getActivity().getApplicationContext(), //Context
                                 "Your report has been saved", // Message to display
                                 Toast.LENGTH_SHORT // Duration of the message, another possible value is Toast.LENGTH_LONG
@@ -346,4 +289,50 @@ public class ReportFragment extends Fragment {
         return view;
     }
     //exercise time spent, exercise level, exercise activity category
+
+
+    private String getRequestKeyword(String reportCategory) {
+        switch(reportCategory) {
+            case ("Walking"):
+                return "hiking trail";
+            case ("Running"):
+                return "jogging trail";
+            case ("Swimming"):
+                return "swimming pool";
+            case ("Climbing"):
+                return "climbing gym";
+            case ("Yoga"):
+                return "yoga studio";
+            case ("Badminton"):
+                return "play badminton here";
+            case ("Hockey"):
+                return "play hockey here";
+            case ("Tennis"):
+                return "tennis center court";
+            case ("Basketball"):
+                return "play basketball here";
+            case ("Soccer"):
+                return "play soccer here";
+            case ("Football"):
+                return "play football here";
+            case ("Baseball"):
+                return "play baseball here";
+            case ("Golf"):
+                return "play golf here";
+            case ("Pilates"):
+                return "pilates";
+            case ("Parkour"):
+                return "parkour school";
+            case ("Dancing"):
+                return "dance center";
+            case ("Lacrosse"):
+                return "play lacrosse here";
+            case ("Wrestling"):
+                return "go wrestling";
+            case ("MMA"):
+                return "mma gym school";
+            default:
+                return "fitness place";
+        }
+    }
 }

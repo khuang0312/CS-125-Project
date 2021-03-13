@@ -21,7 +21,7 @@ public enum Interest {
     DANCING,
     LACROSSE,
     WRESTLING,
-    MARTIAL_ARTS,
+    MMA,
     UNAVAILABLE;
 
     public static String getString(Interest interest) {

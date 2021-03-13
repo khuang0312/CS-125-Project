@@ -24,6 +24,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.username_shared_preference_key), this.MODE_PRIVATE);
         String userName = sharedPref.getString("username", null);
+
+        /*
         //testing
         // userName = null
         if (userName == null) {
@@ -37,8 +39,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             editor.apply();
 
         }
+        */
+
         //else {
-        String defaultUsername = "huangk11";
+        String defaultUsername = "newuser";
         sharedPref = this.getSharedPreferences(getString(R.string.username_shared_preference_key), this.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString("username", defaultUsername);
@@ -86,15 +90,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new ReportFragment()).commit();
                 break;
-            case R.id.toggleInterest1:
-                // Log.d("MAP_MENU", "toggled Interest 1");
-                break;
-            case R.id.toggleInterest2:
-                // Log.d("MAP_MENU", "toggled Interest 2");
-                break;
-            case R.id.toggleInterest3:
-                // Log.d("MAP_MENU", "toggled Interest 3");
-                break;
+
 
         }
         return true;

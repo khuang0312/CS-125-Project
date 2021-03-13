@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -48,6 +49,11 @@ public class MapsFragment extends Fragment {
     double userLat = 0;
     double userLong = 0;
     GoogleMap mMap;
+    Button interestSelect;
+    Interest currentInterest = Interest.WALKING;
+
+
+
     private final OnMapReadyCallback callback = new OnMapReadyCallback() {
 
         /**
@@ -63,10 +69,11 @@ public class MapsFragment extends Fragment {
         public void onMapReady(GoogleMap googleMap) {
             Places.initialize(getActivity().getApplicationContext(), "AIzaSyDmgABoOuT2Fy_LEq-QEHK9T1y3Ff6NPxQ");
             PlacesClient placesClient = Places.createClient(getActivity().getApplicationContext());
+
+
+
             mMap = googleMap;
             mMap.moveCamera(CameraUpdateFactory.zoomTo(10));
-
-
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             //get username through shared preferences, check if it already exists in firebase
             SharedPreferences sharedPref = getContext().getSharedPreferences(getString(R.string.username_shared_preference_key), getContext().MODE_PRIVATE);
@@ -195,6 +202,24 @@ public class MapsFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_maps, container, false);
+        interestSelect = (Button)view.findViewById(R.id.interestToggle);
+        interestSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                interestSelect.setText(Interest.getString(currentInterest));
+
+                int nextEnumIndex = currentInterest.ordinal() + 1;
+                // Don't account for "UNKNOWN"
+                if (nextEnumIndex >= Interest.values().length - 1) {
+                    nextEnumIndex = 0;
+                }
+
+                currentInterest = Interest.values()[nextEnumIndex];
+            }
+        });
+
+
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         //get username through shared preferences, check if it already exists in firebase
         SharedPreferences sharedPref = view.getContext().getSharedPreferences(getString(R.string.username_shared_preference_key), view.getContext().MODE_PRIVATE);
@@ -230,4 +255,7 @@ public class MapsFragment extends Fragment {
             mapFragment.getMapAsync(callback);
         }
     }
+
+
+
 }
