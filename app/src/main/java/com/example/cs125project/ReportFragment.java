@@ -1,6 +1,8 @@
 package com.example.cs125project;
 
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +29,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AddressComponent;
@@ -211,6 +216,7 @@ public class ReportFragment extends Fragment {
                             final String location = "location="+ userLat + "," + userLong;
                             String radius = "radius=50000";
                             currentInterest = report.getCategory();
+                            final String currentInterestQuery = report.getCategory();
                             String keyword = "keyword=" + getRequestKeyword(currentInterest);
                             String requestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" + keyword + "&" + location + "&" + radius + "&" + key;
                             Log.d("Response", requestURL);
@@ -223,8 +229,7 @@ public class ReportFragment extends Fragment {
                                     try {
                                         JSONArray array = response.getJSONArray("results");
                                         for (int i = 0; i < array.length(); i++) {
-                                            numLocations += 1;
-                                            String placeIDResponse = array.getJSONObject(i).getString("place_id");
+                                            final String placeIDResponse = array.getJSONObject(i).getString("place_id");
                                             Double longResponse = array.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").getDouble("lng");
                                             Double latResponse = array.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").getDouble("lat");
                                             String nameResponse = array.getJSONObject(i).getString("name");
@@ -234,20 +239,47 @@ public class ReportFragment extends Fragment {
 
 
 
-                                            PointOfInterest poi =  new PointOfInterest();
+                                            final PointOfInterest poi =  new PointOfInterest(nameResponse, longResponse, latResponse);
                                             poi.setLatitude(latResponse);
                                             poi.setLongitude(longResponse);
 
-                                            ArrayList<String> interests = new ArrayList<String>();
-                                            interests.add(currentInterest);
-                                            poi.setInterests(interests);
-                                            poi.setName(nameResponse);
+                                            final ArrayList<String> interests = new ArrayList<String>();
+                                            interests.add(currentInterestQuery);
+                                            //DatabaseReference dbRef = database.getReference();
 
-                                            FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                            DatabaseReference dbRef = database.getReference();
-                                            //locations: key is name, value is pair <double latitude, double longitude>
-                                            dbRef.child("users").child(username).child("locations").child("count").setValue(numLocations);
-                                            dbRef.child("users").child(username).child("locations").child(placeIDResponse).setValue(poi);
+                                            dbRef.child("users").child(username).child("locations").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    // This method is called once with the initial value and again
+                                                    // whenever data at this location is updated.'
+
+                                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                                        //snapshot.getKey(); = name of location
+                                                        if (snapshot.getKey().equals(placeIDResponse)) {
+                                                            int currentCount = snapshot.child("interests").child("count").getValue(Integer.class);
+                                                            dbRef.child("users").child(username).child("locations").child(snapshot.getKey()).child("interests").child(Integer.toString(currentCount + 1)).setValue(currentInterestQuery);
+                                                            dbRef.child("users").child(username).child("locations").child(snapshot.getKey()).child("interests").child("count").setValue(currentCount + 1);
+                                                            return;
+                                                        }
+                                                    }
+                                                    //place id does not already exist
+
+                                                    numLocations += 1;
+                                                    dbRef.child("users").child(username).child("locations").child("count").setValue(numLocations);
+                                                    dbRef.child("users").child(username).child("locations").child(placeIDResponse).setValue(poi);
+                                                    dbRef.child("users").child(username).child("locations").child(placeIDResponse).child("interests").child("1").setValue(currentInterestQuery);
+                                                    dbRef.child("users").child(username).child("locations").child(placeIDResponse).child("interests").child("count").setValue(1);
+                                                }
+                                                @Override
+                                                public void onCancelled(DatabaseError error) {
+                                                    Log.d("onCancelled", "triggered in the event that this listener either failed at the server, or is removed as a result of the security and Firebase Database rules.");
+                                                }
+                                            });
+//                                            FirebaseDatabase database = FirebaseDatabase.getInstance();
+//                                            DatabaseReference dbRef = database.getReference();
+//                                            //locations: key is name, value is pair <double latitude, double longitude>
+//                                            dbRef.child("users").child(username).child("locations").child("count").setValue(numLocations);
+//                                            dbRef.child("users").child(username).child("locations").child(placeIDResponse).setValue(poi);
                                             //.getDouble("lat")
 //                                            Log.d("ResponseLat", latResponse.toString());
 //                                            Log.d("ResponseLong", latResponse.toString());

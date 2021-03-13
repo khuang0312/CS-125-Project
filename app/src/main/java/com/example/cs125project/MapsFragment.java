@@ -43,16 +43,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+
 public class MapsFragment extends Fragment {
     String username;
-    Bitmap bMap;
     double userLat = 0;
     double userLong = 0;
     GoogleMap mMap;
     Button interestSelect;
-    Interest currentInterest = Interest.WALKING;
-
-
+    Interest currentInterest = Interest.Walking;
+    HashSet<String> userInterests;
+    ArrayList<String> userInterestsList;
+    int currentInterestIndex;
+    LatLng userLoc;
 
     private final OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -69,8 +73,8 @@ public class MapsFragment extends Fragment {
         public void onMapReady(GoogleMap googleMap) {
             Places.initialize(getActivity().getApplicationContext(), "AIzaSyDmgABoOuT2Fy_LEq-QEHK9T1y3Ff6NPxQ");
             PlacesClient placesClient = Places.createClient(getActivity().getApplicationContext());
-
-
+            userInterests = new HashSet<String>();
+            userInterestsList = new ArrayList<String>();
 
             mMap = googleMap;
             mMap.moveCamera(CameraUpdateFactory.zoomTo(10));
@@ -90,7 +94,7 @@ public class MapsFragment extends Fragment {
                         userLat = user.getLatitude();
                         userLong = user.getLongitude();
                         Log.d("MapsFragment", Double.toString(userLat) + ", " + Double.toString(userLong));
-                        LatLng userLoc = new LatLng(userLat, userLong);
+                        userLoc = new LatLng(userLat, userLong);
 
                         //make http request of relevant locations nearby
 
@@ -112,7 +116,8 @@ public class MapsFragment extends Fragment {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     // This method is called once with the initial value and again
-                    // whenever data at this location is updated.
+                    // whenever data at this location is updated.'
+
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         //snapshot.getKey(); = name of location
                         if (snapshot.getKey().equals("count")) {
@@ -120,12 +125,17 @@ public class MapsFragment extends Fragment {
                         }
                         PointOfInterest poi = snapshot.getValue(PointOfInterest.class);
                         LatLng location = new LatLng(poi.getLatitude(), poi.getLongitude());
-
+                        int numInterests = snapshot.child("interests").child("count").getValue(Integer.class);
+                        for (int i = 0; i < numInterests; i++) {
+                            String interest = snapshot.child("interests").child(Integer.toString(i+1)).getValue(String.class);
+                            userInterests.add(interest);
+                        }
                         //make http request of relevant locations nearby
 
                         // only display the interest currently toggled
-
-                        switch (poi.getInterest()){
+                        Bitmap bMap;
+                        String initialDisplayInterest = snapshot.child("interests").child("1").getValue(String.class);
+                        switch (initialDisplayInterest){
                             case ("Walking"):
                                 bMap = BitmapFactory.decodeResource(getResources(), R.drawable.walking);
                                 break;
@@ -183,16 +193,27 @@ public class MapsFragment extends Fragment {
                             case ("MMA"):
                                 bMap = BitmapFactory.decodeResource(getResources(), R.drawable.mma);
                                 break;
+                            default:
+                                bMap = BitmapFactory.decodeResource(getResources(), R.drawable.mma);
                         }
 
                         mMap.addMarker(new MarkerOptions().position(location).title(poi.getName()).icon(BitmapDescriptorFactory.fromBitmap(bMap)));
                     }
+                    userInterestsList = new ArrayList<String>();
+                    userInterestsList.add("ALL");
+                    for (String s : userInterests) {
+                        Log.d("userINterests contains", Integer.toString(userInterests.size()));
+
+                        userInterestsList.add(s);
+                    }
+
                 }
                 @Override
                 public void onCancelled(DatabaseError error) {
                     Log.d("onCancelled", "triggered in the event that this listener either failed at the server, or is removed as a result of the security and Firebase Database rules.");
                 }
             });
+
         }
     };
 
@@ -201,20 +222,123 @@ public class MapsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        currentInterestIndex = 0;
         View view = inflater.inflate(R.layout.fragment_maps, container, false);
         interestSelect = (Button)view.findViewById(R.id.interestToggle);
         interestSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                interestSelect.setText(Interest.getString(currentInterest));
-
-                int nextEnumIndex = currentInterest.ordinal() + 1;
-                // Don't account for "UNKNOWN"
-                if (nextEnumIndex >= Interest.values().length - 1) {
-                    nextEnumIndex = 0;
+                Log.d("onClick", Integer.toString(userInterestsList.size()));
+                for (String s : userInterestsList) {
+                    Log.d("onClick", s);
                 }
+                mMap.clear();
+                mMap.addMarker(new MarkerOptions()
+                        .position(userLoc)
+                        .title("You are here!")
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                currentInterestIndex = (currentInterestIndex  + 1);
+                if (currentInterestIndex == userInterestsList.size()) {
+                    currentInterestIndex = 0;
+                }
+                Log.d("onClickIndex", Integer.toString(currentInterestIndex));
+                interestSelect.setText(userInterestsList.get(currentInterestIndex));
+                final String cInterest = interestSelect.getText().toString();
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference dbRef = database.getReference();
+                //update markers to only show those with relevant interest
+                dbRef.child("users").child(username).child("locations").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // This method is called once with the initial value and again
+                        // whenever data at this location is updated.'
 
-                currentInterest = Interest.values()[nextEnumIndex];
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            //snapshot.getKey(); = name of location
+                            if (snapshot.getKey().equals("count")) {
+                                continue;
+                            }
+                            PointOfInterest poi = snapshot.getValue(PointOfInterest.class);
+                            LatLng location = new LatLng(poi.getLatitude(), poi.getLongitude());
+                            int numInterests = snapshot.child("interests").child("count").getValue(Integer.class);
+                            Bitmap bMap;
+
+                            for (int i = 0; i < numInterests; i++) {
+                                String interest = snapshot.child("interests").child(Integer.toString(i+1)).getValue(String.class);
+
+                                if (cInterest.equals(interest) || cInterest == "ALL") {
+                                    switch (interest){
+                                        case ("Walking"):
+                                            bMap = BitmapFactory.decodeResource(getResources(), R.drawable.walking);
+                                            break;
+                                        case ("Running"):
+                                            bMap = BitmapFactory.decodeResource(getResources(), R.drawable.running);
+                                            break;
+                                        case ("Swimming"):
+                                            bMap = BitmapFactory.decodeResource(getResources(), R.drawable.swimming);
+                                            break;
+                                        case ("Climbing"):
+                                            bMap = BitmapFactory.decodeResource(getResources(), R.drawable.climbing);
+                                            break;
+                                        case ("Yoga"):
+                                            bMap = BitmapFactory.decodeResource(getResources(), R.drawable.yoga);
+                                            break;
+                                        case ("Badminton"):
+                                            bMap = BitmapFactory.decodeResource(getResources(), R.drawable.badminton);
+                                            break;
+                                        case ("Hockey"):
+                                            bMap = BitmapFactory.decodeResource(getResources(), R.drawable.hockey);
+                                            break;
+                                        case ("Tennis"):
+                                            bMap = BitmapFactory.decodeResource(getResources(), R.drawable.tennis);
+                                            break;
+                                        case ("Basketball"):
+                                            bMap = BitmapFactory.decodeResource(getResources(), R.drawable.basketball);
+                                            break;
+                                        case ("Soccer"):
+                                            bMap = BitmapFactory.decodeResource(getResources(), R.drawable.soccer);
+                                            break;
+                                        case ("Football"):
+                                            bMap = BitmapFactory.decodeResource(getResources(), R.drawable.football);
+                                            break;
+                                        case ("Baseball"):
+                                            bMap = BitmapFactory.decodeResource(getResources(), R.drawable.baseball);
+                                            break;
+                                        case ("Golf"):
+                                            bMap = BitmapFactory.decodeResource(getResources(), R.drawable.golf);
+                                            break;
+                                        case ("Pilates"):
+                                            bMap = BitmapFactory.decodeResource(getResources(), R.drawable.pilates);
+                                            break;
+                                        case ("Parkour"):
+                                            bMap = BitmapFactory.decodeResource(getResources(), R.drawable.parkour);
+                                            break;
+                                        case ("Dancing"):
+                                            bMap = BitmapFactory.decodeResource(getResources(), R.drawable.dancing);
+                                            break;
+                                        case ("Lacrosse"):
+                                            bMap = BitmapFactory.decodeResource(getResources(), R.drawable.lacrosse);
+                                            break;
+                                        case ("Wrestling"):
+                                            bMap = BitmapFactory.decodeResource(getResources(), R.drawable.wrestling);
+                                            break;
+                                        case ("MMA"):
+                                            bMap = BitmapFactory.decodeResource(getResources(), R.drawable.mma);
+                                            break;
+                                        default:
+                                            bMap = BitmapFactory.decodeResource(getResources(), R.drawable.mma);
+                                    }
+                                    mMap.addMarker(new MarkerOptions().position(location).title(poi.getName()).icon(BitmapDescriptorFactory.fromBitmap(bMap)));
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        Log.d("onCancelled", "triggered in the event that this listener either failed at the server, or is removed as a result of the security and Firebase Database rules.");
+                    }
+                });
             }
         });
 

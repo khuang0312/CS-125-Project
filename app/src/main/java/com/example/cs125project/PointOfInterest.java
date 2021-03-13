@@ -5,12 +5,15 @@ import java.util.List;
 public class PointOfInterest {
     private double longitude;
     private double latitude;
-    private String interest;
-    private List<String> interests;
+    //private String interest;
+    //private List<String> interests;
     private String name;
+    public PointOfInterest() {}
 
-    public PointOfInterest() {
-
+    public PointOfInterest(String name, double longitude, double latitude) {
+        this.name = name;
+        this.longitude = longitude;
+        this.latitude = latitude;
     }
 
     public void setLatitude(double latitude) {
@@ -19,13 +22,13 @@ public class PointOfInterest {
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
-    public void setInterest(String interest) {
-        this.interest = interest;
-    }
+    //public void setInterest(String interest) {
+//        this.interest = interest;
+//    }
     public void setName(String name) {
         this.name = name;
     }
-    public void setInterests(List<String> interests) {this.interests = interests; }
+//    public void setInterests(List<String> interests) {this.interests = interests; }
 
 
 
@@ -33,8 +36,8 @@ public class PointOfInterest {
     public double getLongitude() {
         return longitude;
     }
-    public String getInterest() {return interest; }
-    public List<String> getInterests() { return interests; }
+    //public String getInterest() {return interest; }
+    //public List<String> getInterests() { return interests; }
     public String getName() {
         return name;
     }
