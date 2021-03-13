@@ -1,5 +1,7 @@
 package com.example.cs125project;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.lang.Integer;
 import java.util.HashMap;
@@ -15,19 +17,37 @@ public class Recommendation {
 
     //Scores the distance between two entities based on their lat-long coordinates
     static int locationScore(double lat1, double long1, double lat2, double long2) {
+        // haversine formula
+        final int R = 6_371_000; // in meters
+
+        double phi1 = lat1 * Math.PI / 180;
+        double phi2 = lat2 * Math.PI / 180;
+        double deltaphi = (lat2 - lat1) * Math.PI / 180;
+        double deltalambda = (long2 - long1) * Math.PI / 180;
+
+        double a = Math.sin(deltaphi / 2) * Math.sin(deltaphi / 2)  +
+                Math.cos(phi1) + Math.cos(phi2)
+                * Math.sin(deltalambda/2) * Math.sin(deltalambda / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double dist = R * c; // in meters
+        Log.d("haversine distance", Double.toString(dist));
         int score = 0;
-        double distance = (Math.abs(lat1 - lat2) + Math.abs(long1 - long2));
-        if (distance <= 0.01) {       //= Same block
+
+        if (dist <= 924.2) {
+            score += 6;
+        } else if (dist <= 2772 ) {
             score += 5;
-        } else if (distance <= 0.03) { //= Same street
+        } else if (dist <= 4621) {
             score += 4;
-        } else if (distance <= 0.05) { //= Westminster to Garden Grove (neighboring cities)
+        } else if (dist <= 9242) {
             score += 3;
-        } else if (distance <= 0.1) { //= Westminster to Santa Ana
+        } else if (dist <= 13860) {
             score += 2;
-        } else if (distance <= 0.15) { //= Westminster to UCI
+        } else if (dist <= 50000) {
             score += 1;
         }
+
         return score;
     }
 
