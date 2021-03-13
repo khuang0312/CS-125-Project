@@ -16,6 +16,10 @@
         <item android:id="@+id/nav_report"
             android:icon="@drawable/ic_message"
             android:title="Report Exercise Activity"></item>
+        <item android:id="@+id/report_display"
+            android:icon="@drawable/ic_report_display"
+            android:title="List of Reports"></item>
+
 
     </group>
 </menu>

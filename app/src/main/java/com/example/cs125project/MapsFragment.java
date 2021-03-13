@@ -380,6 +380,4 @@ public class MapsFragment extends Fragment {
         }
     }
 
-
-
 }
