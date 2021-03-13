@@ -36,7 +36,7 @@ public class Recommendation {
         int score = 0;
         for (String i : interests1) {
             if (interests2.contains(i)) {
-                score += 1;
+                score += 4;
             }
         }
         return score;

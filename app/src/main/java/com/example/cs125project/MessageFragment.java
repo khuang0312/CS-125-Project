@@ -1,6 +1,7 @@
 package com.example.cs125project;
 
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,6 +24,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Stream;
+
 import android.content.SharedPreferences;
 import android.widget.TextView;
 
@@ -36,6 +43,7 @@ public class MessageFragment extends Fragment {
     int recommendedDuration;
     PointOfInterest recommendedPlace;
     User recommendedUser = new User();
+    TreeMap<String, Integer> recommendedUsers;
 
     //Used for getting info to inform activity recommendation
     ArrayList<String> lastInterests = new ArrayList<String>();
@@ -158,29 +166,45 @@ public class MessageFragment extends Fragment {
         orderedUsers.addListenerForSingleValueEvent(new ValueEventListener(){
             @Override
             public void onDataChange(DataSnapshot dataSnapshot){
-                recommendedUser = null; // resets RecommendedUser, allows to account for if there are no other users to recommend
+                recommendedUsers = new TreeMap<String, Integer>(); // resets RecommendedUser, allows to account for if there are no other users to recommend
+
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                     User user2 = snapshot.getValue(User.class);
                     //Skip if the iterated user is the current user
                     if (username.equals(user2.getUsername())){
                         continue;
                     }
-                    currUserScore = 0;
-                    currUserScore += Recommendation.locationScore(userLat, userLong, user2.getLatitude(), user2.getLongitude());
-                    currUserScore += Recommendation.interestsScore(interestForScoring, user2.getInterests());
-                    if (bestUserScore < currUserScore) {
-                        bestUserScore = currUserScore;
-                        recommendedUser = user2;
-                    }
+                    Log.d("user1 interests", interestForScoring.toString());
+                    Log.d("user1 coords", Double.toString(userLat) + " "
+                            + Double.toString(userLong) + " " + Double.toString(user2.getLatitude()) + " " + Double.toString(user2.getLongitude()));
+
+                    int user2Score = Recommendation.locationScore(userLat, userLong, user2.getLatitude(), user2.getLongitude())
+                     + Recommendation.interestsScore(interestForScoring, user2.getInterests());
+                    Log.d("Score", Integer.toString(user2Score));
+                    recommendedUsers.put(user2.getUsername(), user2Score);
+                }
+                if (recommendedUsers.size() == 0) {
+                    recommendedUsers.put(Recommendation.DEFAULT_VALUE, 0);
                 }
 
-                if (recommendedUser != null) {
-                    mUser.setText(recommendedUser.getUsername());
-                    //Log.i("RECOMMENDATIONS", "Recommended user: " + recommendedUser.getUsername());
-                } else {
-                    mUser.setText(Recommendation.DEFAULT_VALUE + ": NO USER RECOMMENDED");
-                    //Log.i("RECOMMENDATIONS", "Recommended user: " + "NO USER RECOMMENDED");
+
+                LinkedHashMap<String, Integer> sortedUsers = new LinkedHashMap<String, Integer>();
+
+                recommendedUsers.entrySet()
+                        .stream()
+                        .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                        .sorted(Map.Entry.comparingByKey())
+                        .forEachOrdered(x -> sortedUsers.put(x.getKey(), x.getValue()));
+
+                // iterate through stream and set text to name and score... in RecyclerView!
+                String usersListString = new String();
+                for (Map.Entry<String, Integer> user : sortedUsers.entrySet()) {
+                    usersListString += user.getKey() + ", Score: " + user.getValue() + "\n";
                 }
+
+
+                mUser.setText(usersListString);
+                mUser.setMovementMethod(new ScrollingMovementMethod());
             }
 
             @Override

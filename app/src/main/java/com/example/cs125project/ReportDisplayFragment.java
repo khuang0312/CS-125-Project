@@ -46,8 +46,12 @@ public class ReportDisplayFragment extends Fragment {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.'
                 final LinearLayout linearLayout = view.findViewById(R.id.report_display_linear_layout);
-
-                int reportCount = dataSnapshot.child("count").getValue(Integer.class);
+                try {
+                    int reportCount = dataSnapshot.child("count").getValue(Integer.class);
+                }
+                catch (NullPointerException e) {
+                    return;
+                }
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     //snapshot.getKey(); = name of location
                     if (!snapshot.getKey().equals("count")) {
