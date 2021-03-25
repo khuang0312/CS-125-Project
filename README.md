@@ -1,4 +1,4 @@
-# Fitpal: A CS-125-Project
+# Fitpal
 Developers
 * Klim Rayskiy
 * Kevin Huang
